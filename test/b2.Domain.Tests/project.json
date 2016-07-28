@@ -18,11 +18,16 @@
     },
     "buildOptions": {
         "copyToOutput": {
-            "include": [ "xunit.runner.json" ]
+            "include": [
+                "xunit.runner.json"
+            ]
         },
         "debugType": "portable"
     },
     "tooling": {
         "defaultNamespace": "b2.Domain.Tests"
+    },
+    "tools": {
+        "Microsoft.DotNet.Watcher.Tools": "1.0.0-preview2-final"
     }
 }
