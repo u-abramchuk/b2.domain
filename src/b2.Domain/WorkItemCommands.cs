@@ -2,14 +2,14 @@ namespace b2.Domain
 {
     public class CreateWorkItemFromTaskCommand
     {
-        public CreateWorkItemFromTaskCommand(string id, Task task)
+        public CreateWorkItemFromTaskCommand(string workItemId, string taskId)
         {
-            Id = id;
-            Task = task;
+            WorkItemId = workItemId;
+            TaskId = taskId;
         }
 
-        public string Id { get; }
-        public Task Task { get; }
+        public string WorkItemId { get; }
+        public string TaskId { get; }
     }
 
     public class CreateWorkItemFromBranchCommand
@@ -26,13 +26,13 @@ namespace b2.Domain
 
     public class AssignTaskToWorkItemCommand
     {
-        public AssignTaskToWorkItemCommand(string id, Task task)
+        public AssignTaskToWorkItemCommand(string id, string taskId)
         {
             Id = id;
-            Task = task;
+            TaskId = taskId;
         }
 
         public string Id { get; }
-        public Task Task { get; }
+        public string TaskId { get; }
     }
 }

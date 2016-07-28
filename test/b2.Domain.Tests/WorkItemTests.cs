@@ -9,13 +9,13 @@ namespace b2.Domain.Tests
         public void CreateWorkItemFromTask()
         {
             var id = "test-id";
-            var status = "new";
+            var defaultStatus = "new";
             var task = new Task("task-id", "name", "http://task", "new");
             var workItem = new WorkItem(id, task);
 
             Assert.Equal(id, workItem.Id);
-            Assert.Equal(status, workItem.Status);
-            Assert.Equal(task, workItem.Task);
+            Assert.Equal(defaultStatus, workItem.Status);
+            Assert.Equal(task.Id, workItem.TaskId);
         }
 
         [Fact]
@@ -59,25 +59,14 @@ namespace b2.Domain.Tests
         }
 
         // [Fact]
-        // public void ChangeTaskState()
+        // public void CannotChangeTaskStateWhenTaskIsNotSet()
         // {
-        //     var task = new Task("task-id", "name", "http://task", "new");
-        //     var workItem = new WorkItem("id", task);
-        //     var status = "in progress";
-        //     workItem.SetTaskState(status);
+        //     var workItem = new WorkItem("workitem-id", new Branch("branch-id1"));
+        //     var ex = Assert.Throws<InvalidOperationException>(() => 
+        //         workItem.SetTaskState("wrong")
+        //     );
 
-        //     Assert.Equal(workItem.Task.Status, status);
+        //     Assert.Equal("Cannot change task state as task is not set", ex.Message);
         // }
-
-        [Fact]
-        public void CannotChangeTaskStateWhenTaskIsNotSet()
-        {
-            var workItem = new WorkItem("workitem-id", new Branch("branch-id1"));
-            var ex = Assert.Throws<InvalidOperationException>(() => 
-                workItem.SetTaskState("wrong")
-            );
-
-            Assert.Equal("Cannot change task state as task is not set", ex.Message);
-        }
     }
 }

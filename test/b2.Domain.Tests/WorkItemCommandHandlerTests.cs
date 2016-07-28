@@ -4,17 +4,18 @@ using System.Linq;
 
 namespace b2.Domain.Tests
 {
-    public class CommandHandlerTests
+    public class WorkItemCommandHandlerTests
     {
         private readonly InMemoryRepository _repository;
-        private readonly CommandHandler _handler;
+        private readonly WorkItemCommandHandler _handler;
 
         private const string workItemFromBranchId = "workitem-with-branch-id";
+        private const string taskId = "task-id";
 
-        public CommandHandlerTests()
+        public WorkItemCommandHandlerTests()
         {
             _repository = new InMemoryRepository();
-            _handler = new CommandHandler(_repository);
+            _handler = new WorkItemCommandHandler(_repository);
 
             PopulateRepository();
         }
@@ -22,9 +23,8 @@ namespace b2.Domain.Tests
         [Fact]
         public void SaveOnlyNewEvents()
         {
-            var task = new Task("task-id", "task", "http://task", "new");
             var command =
-                new AssignTaskToWorkItemCommand(workItemFromBranchId, task);
+                new AssignTaskToWorkItemCommand(workItemFromBranchId, taskId);
 
             _handler.Handle(command);
 
@@ -36,18 +36,17 @@ namespace b2.Domain.Tests
         }
 
         [Fact]
-        public void CreateWorkItemFromTest()
+        public void CreateWorkItemFromTask()
         {
             var id = "new-id";
-            var task = new Task("task-id", "task", "http://task", "new");
-            var command = new CreateWorkItemFromTaskCommand(id, task);
+            var command = new CreateWorkItemFromTaskCommand(id, taskId);
 
             _handler.Handle(command);
 
             var @event = GetFromRepository<WorkItemCreatedFromTask>(id);
 
             Assert.Equal(id, @event.Id);
-            Assert.Equal(task, @event.Task);
+            Assert.Equal(taskId, @event.TaskId);
         }
 
         [Fact]
@@ -68,9 +67,8 @@ namespace b2.Domain.Tests
         [Fact]
         public void AssignTaskToWorkItem()
         {
-            var task = new Task("task-id", "task", "http://task", "new");
             var command =
-                new AssignTaskToWorkItemCommand(workItemFromBranchId, task);
+                new AssignTaskToWorkItemCommand(workItemFromBranchId, taskId);
 
             _handler.Handle(command);
 
@@ -78,11 +76,14 @@ namespace b2.Domain.Tests
                 GetFromRepository<TaskAssignedToWorkItem>(workItemFromBranchId);
 
             Assert.Equal(workItemFromBranchId, @event.Id);
-            Assert.Equal(task, @event.Task);
+            Assert.Equal(taskId, @event.TaskId);
         }
 
         private void PopulateRepository()
         {
+            var taskCreatedEvent = new TaskCreated(taskId, "task", "http://task", "new");
+            _repository.Storage.Add(taskCreatedEvent);
+
             var branch = new Branch("branch-id");
             var workItemCreatedFromBranch =
                 new WorkItemCreatedFromBranch(workItemFromBranchId, branch);

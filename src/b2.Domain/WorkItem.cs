@@ -7,7 +7,7 @@ namespace b2.Domain
     {
         public WorkItem(string id, Task task) : this()
         {
-            HandleEvent(new WorkItemCreatedFromTask(id, task), true);
+            HandleEvent(new WorkItemCreatedFromTask(id, task.Id), true);
         }
 
         public WorkItem(string id, Branch branch) : this()
@@ -21,17 +21,17 @@ namespace b2.Domain
         }
 
         public string Status { get; }
-        public Task Task { get; private set; }
+        public string TaskId { get; private set; }
         public Branch Branch { get; private set; }
 
         public void AssignTask(Task task)
         {
-            if (Task != null && Task != task)
+            if (TaskId != null && TaskId != task.Id)
             {
                 throw new InvalidOperationException("Cannot change task");
             }
 
-            HandleEvent(new TaskAssignedToWorkItem(Id, task), true);
+            HandleEvent(new TaskAssignedToWorkItem(Id, task.Id), true);
         }
 
         public void AssignBranch(Branch branch)
@@ -47,7 +47,7 @@ namespace b2.Domain
         public void Handle(WorkItemCreatedFromTask @event)
         {
             Id = @event.Id;
-            Task = @event.Task;
+            TaskId = @event.TaskId;
         }
 
         public void Handle(WorkItemCreatedFromBranch @event)
@@ -58,47 +58,14 @@ namespace b2.Domain
 
         public void Handle(TaskAssignedToWorkItem @event)
         {
-            Task = @event.Task;
+            TaskId = @event.TaskId;
         }
 
         public void Handle(BranchAssignedToWorkItem @event)
         {
             Branch = @event.Branch;
         }
-
-        public void SetTaskState(string status)
-        {
-            if (Task == null)
-            {
-                throw new InvalidOperationException(
-                    "Cannot change task state as task is not set");
-            }
-
-            Task.SetStatus(status);
-        }
     }
-
-    public class Task : IDomainEntity
-    {
-        public Task(string id, string name, string url, string status)
-        {
-            Id = id;
-            Name = name;
-            Url = url;
-            Status = status;
-        }
-
-        public string Id { get; }
-        public string Name { get; }
-        public string Url { get; }
-        public string Status { get; private set; }
-
-        public void SetStatus(string status)
-        {
-            Status = status;
-        }
-    }
-
     public class Branch : IEntity
     {
         public Branch(string id)
@@ -110,12 +77,12 @@ namespace b2.Domain
 
     public class WorkItemCreatedFromTask : Event
     {
-        public WorkItemCreatedFromTask(string id, Task task) : base(id)
+        public WorkItemCreatedFromTask(string id, string taskId) : base(id)
         {
-            Task = task;
+            TaskId = taskId;
         }
 
-        public Task Task { get; }
+        public string TaskId { get; }
     }
 
     public class WorkItemCreatedFromBranch : Event
@@ -130,12 +97,12 @@ namespace b2.Domain
 
     public class TaskAssignedToWorkItem : Event
     {
-        public TaskAssignedToWorkItem(string id, Task task) : base(id)
+        public TaskAssignedToWorkItem(string id, string taskId) : base(id)
         {
-            Task = task;
+            TaskId = taskId;
         }
 
-        public Task Task { get; }
+        public string TaskId { get; }
     }
 
     public class BranchAssignedToWorkItem : Event

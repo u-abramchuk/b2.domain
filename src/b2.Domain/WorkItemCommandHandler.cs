@@ -2,18 +2,20 @@ using b2.Domain.Core;
 
 namespace b2.Domain
 {
-    public class CommandHandler
+    public class WorkItemCommandHandler
     {
         private readonly IRepository _repository;
 
-        public CommandHandler(IRepository repository)
+        public WorkItemCommandHandler(IRepository repository)
         {
             _repository = repository;
         }
 
         public void Handle(CreateWorkItemFromTaskCommand command)
         {
-            var workItem = new WorkItem(command.Id, command.Task);
+            var task = _repository.GetById<Task>(command.TaskId);
+            
+            var workItem = new WorkItem(command.WorkItemId, task);
 
             _repository.Save(workItem);
         }
@@ -27,9 +29,10 @@ namespace b2.Domain
 
         public void Handle(AssignTaskToWorkItemCommand command)
         {
+            var task = _repository.GetById<Task>(command.TaskId);
             var workItem = _repository.GetById<WorkItem>(command.Id);
 
-            workItem.AssignTask(command.Task);
+            workItem.AssignTask(task);
 
             _repository.Save(workItem);
         }
