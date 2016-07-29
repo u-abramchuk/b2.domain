@@ -10,7 +10,7 @@
         {
             "taskName": "build",
             "args": [
-                "src/b2.Domain",
+                "src/b2.Domain.Web",
                 "test/b2.Domain.Tests"
             ],
             "isBuildCommand": true,
