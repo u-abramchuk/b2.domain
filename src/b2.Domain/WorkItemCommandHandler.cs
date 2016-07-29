@@ -14,7 +14,7 @@ namespace b2.Domain
         public void Handle(CreateWorkItemFromTaskCommand command)
         {
             var task = _repository.GetById<Task>(command.TaskId);
-            
+
             var workItem = new WorkItem(command.WorkItemId, task);
 
             _repository.Save(workItem);
@@ -22,7 +22,9 @@ namespace b2.Domain
 
         public void Handle(CreateWorkItemFromBranchCommand command)
         {
-            var workItem = new WorkItem(command.Id, command.Branch);
+            var branch = _repository.GetById<Branch>(command.BranchId);
+
+            var workItem = new WorkItem(command.Id, branch);
 
             _repository.Save(workItem);
         }

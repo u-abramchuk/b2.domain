@@ -11,6 +11,7 @@ namespace b2.Domain.Tests
 
         private const string workItemFromBranchId = "workitem-with-branch-id";
         private const string taskId = "task-id";
+        private const string branchId = "branch-id";
 
         public WorkItemCommandHandlerTests()
         {
@@ -53,15 +54,14 @@ namespace b2.Domain.Tests
         public void CreateWorkItemFromBranch()
         {
             var id = "new-id";
-            var branch = new Branch("branch-id");
-            var command = new CreateWorkItemFromBranchCommand(id, branch);
+            var command = new CreateWorkItemFromBranchCommand(id, branchId);
 
             _handler.Handle(command);
 
             var @event = GetFromRepository<WorkItemCreatedFromBranch>(id);
 
             Assert.Equal(id, @event.Id);
-            Assert.Equal(branch, @event.Branch);
+            Assert.Equal(branchId, @event.BranchId);
         }
 
         [Fact]
@@ -84,9 +84,11 @@ namespace b2.Domain.Tests
             var taskCreatedEvent = new TaskCreated(taskId, "task", "http://task", "new");
             _repository.Storage.Add(taskCreatedEvent);
 
-            var branch = new Branch("branch-id");
+            var branchCreatedEvent = new BranchCreated(branchId);
+            _repository.Storage.Add(branchCreatedEvent);
+
             var workItemCreatedFromBranch =
-                new WorkItemCreatedFromBranch(workItemFromBranchId, branch);
+                new WorkItemCreatedFromBranch(workItemFromBranchId, branchId);
             _repository.Storage.Add(workItemCreatedFromBranch);
         }
 

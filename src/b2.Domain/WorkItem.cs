@@ -12,7 +12,7 @@ namespace b2.Domain
 
         public WorkItem(string id, Branch branch) : this()
         {
-            HandleEvent(new WorkItemCreatedFromBranch(id, branch), true);
+            HandleEvent(new WorkItemCreatedFromBranch(id, branch.Id), true);
         }
 
         public WorkItem()
@@ -22,7 +22,7 @@ namespace b2.Domain
 
         public string Status { get; }
         public string TaskId { get; private set; }
-        public Branch Branch { get; private set; }
+        public string BranchId { get; private set; }
 
         public void AssignTask(Task task)
         {
@@ -36,12 +36,12 @@ namespace b2.Domain
 
         public void AssignBranch(Branch branch)
         {
-            if (Branch != null && Branch != branch)
+            if (BranchId != null && BranchId != branch.Id)
             {
                 throw new InvalidOperationException("Cannot change branch");
             }
 
-            HandleEvent(new BranchAssignedToWorkItem(Id, branch), true);
+            HandleEvent(new BranchAssignedToWorkItem(Id, branch.Id), true);
         }
 
         public void Handle(WorkItemCreatedFromTask @event)
@@ -53,7 +53,7 @@ namespace b2.Domain
         public void Handle(WorkItemCreatedFromBranch @event)
         {
             Id = @event.Id;
-            Branch = @event.Branch;
+            BranchId = @event.BranchId;
         }
 
         public void Handle(TaskAssignedToWorkItem @event)
@@ -63,16 +63,8 @@ namespace b2.Domain
 
         public void Handle(BranchAssignedToWorkItem @event)
         {
-            Branch = @event.Branch;
+            BranchId = @event.BranchId;
         }
-    }
-    public class Branch : IEntity
-    {
-        public Branch(string id)
-        {
-            Id = id;
-        }
-        public string Id { get; }
     }
 
     public class WorkItemCreatedFromTask : Event
@@ -87,12 +79,12 @@ namespace b2.Domain
 
     public class WorkItemCreatedFromBranch : Event
     {
-        public WorkItemCreatedFromBranch(string id, Branch branch) : base(id)
+        public WorkItemCreatedFromBranch(string id, string branchId) : base(id)
         {
-            Branch = branch;
+            BranchId = branchId;
         }
 
-        public Branch Branch { get; }
+        public string BranchId { get; }
     }
 
     public class TaskAssignedToWorkItem : Event
@@ -107,11 +99,11 @@ namespace b2.Domain
 
     public class BranchAssignedToWorkItem : Event
     {
-        public BranchAssignedToWorkItem(string id, Branch branch) : base(id)
+        public BranchAssignedToWorkItem(string id, string branchId) : base(id)
         {
-            Branch = branch;
+            BranchId = branchId;
         }
 
-        public Branch Branch { get; }
+        public string BranchId { get; }
     }
 }

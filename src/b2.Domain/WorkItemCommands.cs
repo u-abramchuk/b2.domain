@@ -14,14 +14,14 @@ namespace b2.Domain
 
     public class CreateWorkItemFromBranchCommand
     {
-        public CreateWorkItemFromBranchCommand(string id, Branch branch)
+        public CreateWorkItemFromBranchCommand(string id, string branchId)
         {
             Id = id;
-            Branch = branch;
+            BranchId = branchId;
         }
 
         public string Id { get; }
-        public Branch Branch { get; }
+        public string BranchId { get; }
     }
 
     public class AssignTaskToWorkItemCommand

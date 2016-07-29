@@ -23,12 +23,13 @@ namespace b2.Domain.Tests
         {
             var id = "test-id";
             var status = "new";
-            var branch = new Branch("task-id");
+            var branchId = "branch-id";
+            var branch = new Branch(branchId);
             var workItem = new WorkItem(id, branch);
 
             Assert.Equal(id, workItem.Id);
             Assert.Equal(status, workItem.Status);
-            Assert.Equal(branch, workItem.Branch);
+            Assert.Equal(branchId, workItem.BranchId);
         }
 
         [Fact]
