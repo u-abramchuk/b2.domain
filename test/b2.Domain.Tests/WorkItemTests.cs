@@ -1,4 +1,5 @@
 using System;
+using b2.Domain.Core;
 using Xunit;
 
 namespace b2.Domain.Tests
@@ -39,7 +40,7 @@ namespace b2.Domain.Tests
             var initialTask = new Task("task-id1", "name", "http://task", "new");
             var workItem = new WorkItem(id, initialTask);
             var task = new Task("task-id2", "name", "http://task", "new");
-            var ex = Assert.Throws<InvalidOperationException>(() =>
+            var ex = Assert.Throws<DomainException>(() =>
                 workItem.AssignTask(task)
             );
 
@@ -52,7 +53,7 @@ namespace b2.Domain.Tests
             var id = "test-id";
             var workItem = new WorkItem(id, new Branch("branch-id1"));
             var branch = new Branch("branch-id2");
-            var ex = Assert.Throws<InvalidOperationException>(() =>
+            var ex = Assert.Throws<DomainException>(() =>
                 workItem.AssignBranch(branch)
             );
 

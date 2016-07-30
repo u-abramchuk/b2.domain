@@ -18,6 +18,4 @@ namespace b2.Domain.CommandHandlers
             _repository.Save(branch);
         }
     }
-
-    
 }

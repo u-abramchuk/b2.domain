@@ -1,4 +1,3 @@
-using System;
 using b2.Domain.Core;
 using b2.Domain.Events;
 
@@ -29,7 +28,7 @@ namespace b2.Domain
         {
             if (TaskId != null && TaskId != task.Id)
             {
-                throw new InvalidOperationException("Cannot change task");
+                throw new DomainException("Cannot change task");
             }
 
             HandleEvent(new TaskAssignedToWorkItem(Id, task.Id), true);
@@ -39,7 +38,7 @@ namespace b2.Domain
         {
             if (BranchId != null && BranchId != branch.Id)
             {
-                throw new InvalidOperationException("Cannot change branch");
+                throw new DomainException("Cannot change branch");
             }
 
             HandleEvent(new BranchAssignedToWorkItem(Id, branch.Id), true);
