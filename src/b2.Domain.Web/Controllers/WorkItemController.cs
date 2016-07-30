@@ -1,4 +1,6 @@
 using System;
+using b2.Domain.CommandHandlers;
+using b2.Domain.Commands;
 using Microsoft.AspNetCore.Mvc;
 
 namespace b2.Domain.Web.Controllers

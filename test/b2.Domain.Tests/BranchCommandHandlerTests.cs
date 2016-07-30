@@ -1,5 +1,8 @@
 using System.Linq;
+using b2.Domain.CommandHandlers;
+using b2.Domain.Commands;
 using b2.Domain.Core;
+using b2.Domain.Events;
 using Xunit;
 
 namespace b2.Domain.Tests

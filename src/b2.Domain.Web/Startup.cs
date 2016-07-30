@@ -1,4 +1,5 @@
 using System.IO;
+using b2.Domain.CommandHandlers;
 using b2.Domain.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

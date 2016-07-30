@@ -1,4 +1,5 @@
 using b2.Domain.Core;
+using b2.Domain.Events;
 
 namespace b2.Domain
 {
@@ -16,13 +17,6 @@ namespace b2.Domain
         public void Handle(BranchCreated @event)
         {
             Id = @event.Id;
-        }
-    }
-
-    public class BranchCreated : Event
-    {
-        public BranchCreated(string id) : base(id)
-        {
         }
     }
 }

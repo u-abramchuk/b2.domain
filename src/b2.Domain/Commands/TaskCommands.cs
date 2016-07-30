@@ -1,4 +1,4 @@
-namespace b2.Domain
+namespace b2.Domain.Commands
 {
     public class CreateTaskCommand
     {

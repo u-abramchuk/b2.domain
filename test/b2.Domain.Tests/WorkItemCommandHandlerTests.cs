@@ -1,6 +1,9 @@
 using Xunit;
 using b2.Domain.Core;
 using System.Linq;
+using b2.Domain.CommandHandlers;
+using b2.Domain.Commands;
+using b2.Domain.Events;
 
 namespace b2.Domain.Tests
 {

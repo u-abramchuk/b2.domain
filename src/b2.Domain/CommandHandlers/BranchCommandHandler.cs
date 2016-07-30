@@ -1,6 +1,7 @@
+using b2.Domain.Commands;
 using b2.Domain.Core;
 
-namespace b2.Domain
+namespace b2.Domain.CommandHandlers
 {
     public class BranchCommandHandler
     {
@@ -18,13 +19,5 @@ namespace b2.Domain
         }
     }
 
-    public class CreateBranchCommand
-    {
-        public CreateBranchCommand(string id)
-        {
-            Id = id;
-        }
-
-        public string Id { get; }
-    }
+    
 }
