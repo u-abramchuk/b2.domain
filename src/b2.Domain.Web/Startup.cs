@@ -45,6 +45,8 @@ namespace b2.Domain.Web
 
             services.AddSingleton<IRepository, InMemoryRepository>();
             services.AddSingleton<TaskCommandHandler>();
+            services.AddSingleton<BranchCommandHandler>();
+            services.AddSingleton<WorkItemCommandHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

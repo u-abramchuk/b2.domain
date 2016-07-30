@@ -3,22 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace b2.Domain.Web.Controllers
 {
-    public class TasksController : Controller
+    public class BranchesController : Controller
     {
-        private readonly TaskCommandHandler _handler;
+        private readonly BranchCommandHandler _handler;
         
-        public TasksController(TaskCommandHandler handler)
+        public BranchesController(BranchCommandHandler handler)
         {
             _handler = handler;
         }
 
-        public IActionResult Test()
-        {
-            return new NoContentResult();
-        }
-
         [HttpPost]
-        public string Create([FromBody] CreateTaskCommand command)
+        public string Create([FromBody] CreateBranchCommand command)
         {
             try
             {
