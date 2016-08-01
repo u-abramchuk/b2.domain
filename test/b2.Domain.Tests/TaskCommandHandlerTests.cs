@@ -8,12 +8,14 @@ namespace b2.Domain.Tests
 {
     public class TaskCommandHandlerTests
     {
-        private readonly InMemoryRepository _repository;
+        private readonly InMemoryEventStorage _storage;
+        private readonly Repository _repository;
         private readonly TaskCommandHandler _handler;
 
          public TaskCommandHandlerTests()
         {
-            _repository = new InMemoryRepository();
+            _storage = new InMemoryEventStorage();
+            _repository = new Repository(_storage);
             _handler = new TaskCommandHandler(_repository);
         }
         
@@ -34,7 +36,7 @@ namespace b2.Domain.Tests
           private TEvent GetFromRepository<TEvent>(string id)
             where TEvent : Event
         {
-            return _repository.Storage
+            return _storage.GetAll()
                 .OfType<TEvent>()
                 .Where(x => x.Id == id)
                 .Single();

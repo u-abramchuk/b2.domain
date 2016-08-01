@@ -9,12 +9,14 @@ namespace b2.Domain.Tests
 {
     class BranchCommandHandlerTests
     {
-        private readonly InMemoryRepository _repository;
+        private readonly InMemoryEventStorage _storage;
+        private readonly Repository _repository;
         private readonly BranchCommandHandler _handler;
 
         public BranchCommandHandlerTests()
         {
-            _repository = new InMemoryRepository();
+            _storage = new InMemoryEventStorage();
+            _repository = new Repository(_storage);
             _handler = new BranchCommandHandler(_repository);
         }
 
@@ -34,7 +36,7 @@ namespace b2.Domain.Tests
         private TEvent GetFromRepository<TEvent>(string id)
             where TEvent : Event
         {
-            return _repository.Storage
+            return _storage.GetAll()
                 .OfType<TEvent>()
                 .Where(x => x.Id == id)
                 .Single();

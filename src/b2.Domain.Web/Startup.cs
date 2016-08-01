@@ -44,7 +44,8 @@ namespace b2.Domain.Web
         {
             services.AddMvc();
 
-            services.AddSingleton<IRepository, InMemoryRepository>();
+            services.AddSingleton<IEventStorage, InMemoryEventStorage>();
+            services.AddSingleton<IRepository, Repository>();
             services.AddSingleton<TaskCommandHandler>();
             services.AddSingleton<BranchCommandHandler>();
             services.AddSingleton<WorkItemCommandHandler>();

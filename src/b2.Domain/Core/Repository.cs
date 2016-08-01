@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,18 +10,18 @@ namespace b2.Domain.Core
         void Save<T>(T aggregate) where T : AggregateRoot, new();
     }
 
-    public class InMemoryRepository : IRepository
+    public class Repository : IRepository
     {
-        public InMemoryRepository()
+        public Repository(IEventStorage storage)
         {
-            Storage = new List<Event>();
+            Storage = storage;
         }
 
-        public List<Event> Storage { get; }
+        public IEventStorage Storage { get; }
 
         public T GetById<T>(string id) where T : AggregateRoot, new()
         {
-            var events = Storage.Where(x => x.Id == id);
+            var events = Storage.GetAll().Where(x => x.Id == id);
             var result = new T();
 
             foreach (var @event in events)

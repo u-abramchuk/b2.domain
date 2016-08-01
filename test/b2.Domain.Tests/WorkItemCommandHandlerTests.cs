@@ -9,7 +9,8 @@ namespace b2.Domain.Tests
 {
     public class WorkItemCommandHandlerTests
     {
-        private readonly InMemoryRepository _repository;
+        private readonly InMemoryEventStorage _storage;
+        private readonly Repository _repository;
         private readonly WorkItemCommandHandler _handler;
 
         private const string workItemFromBranchId = "workitem-with-branch-id";
@@ -18,7 +19,8 @@ namespace b2.Domain.Tests
 
         public WorkItemCommandHandlerTests()
         {
-            _repository = new InMemoryRepository();
+            _storage = new InMemoryEventStorage();
+            _repository = new Repository(_storage);
             _handler = new WorkItemCommandHandler(_repository);
 
             PopulateRepository();
@@ -32,7 +34,7 @@ namespace b2.Domain.Tests
 
             _handler.Handle(command);
 
-            var eventsCount = _repository.Storage
+            var eventsCount = _storage.GetAll()
                 .Where(x => x.Id == workItemFromBranchId)
                 .Count();
 
@@ -98,7 +100,7 @@ namespace b2.Domain.Tests
         private TEvent GetFromRepository<TEvent>(string id)
             where TEvent : Event
         {
-            return _repository.Storage
+            return _storage.GetAll()
                 .OfType<TEvent>()
                 .Where(x => x.Id == id)
                 .Single();
