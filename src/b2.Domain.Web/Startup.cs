@@ -1,6 +1,8 @@
 using System.IO;
+using System.Threading.Tasks;
 using b2.Domain.CommandHandlers;
 using b2.Domain.Core;
+using EventStore.ClientAPI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -40,15 +42,27 @@ namespace b2.Domain.Web
             host.Run();
         }
 
-        public void ConfigureServices(IServiceCollection services)
+        public async Task ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
 
-            services.AddSingleton<IEventStorage, InMemoryEventStorage>();
+            var eventStoreConnection = await InitializeEventStoreConnection();
+            services.AddSingleton<IEventStoreConnection>(_ => eventStoreConnection);
+
+            services.AddSingleton<IEventStorage, PersistentEventStorage>();
             services.AddSingleton<IRepository, Repository>();
             services.AddSingleton<TaskCommandHandler>();
             services.AddSingleton<BranchCommandHandler>();
             services.AddSingleton<WorkItemCommandHandler>();
+        }
+
+        private async Task<IEventStoreConnection> InitializeEventStoreConnection()
+        {
+            var eventStoreConnection = await EventStoreConnection.Create(Configuration.GetConnectionString("EventStore"));
+
+            await eventStoreConnection.ConnectAsync();
+
+            return eventStoreConnection;
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
