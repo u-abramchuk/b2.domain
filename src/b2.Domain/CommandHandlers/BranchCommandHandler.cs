@@ -6,8 +6,8 @@ namespace b2.Domain.CommandHandlers
 {
     public class BranchCommandHandler
     {
-        private readonly IRepository _repository;
-        public BranchCommandHandler(IRepository repository)
+        private readonly Repository _repository;
+        public BranchCommandHandler(Repository repository)
         {
             _repository = repository;
         }

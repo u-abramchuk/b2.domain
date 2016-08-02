@@ -6,9 +6,9 @@ namespace b2.Domain.CommandHandlers
 {
     public class WorkItemCommandHandler
     {
-        private readonly IRepository _repository;
+        private readonly Repository _repository;
 
-        public WorkItemCommandHandler(IRepository repository)
+        public WorkItemCommandHandler(Repository repository)
         {
             _repository = repository;
         }

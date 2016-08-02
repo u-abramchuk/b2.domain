@@ -6,9 +6,9 @@ namespace b2.Domain.CommandHandlers
 {
     public class TaskCommandHandler
     {
-        private readonly IRepository _repository;
+        private readonly Repository _repository;
 
-        public TaskCommandHandler(IRepository repository)
+        public TaskCommandHandler(Repository repository)
         {
             _repository = repository;
         }

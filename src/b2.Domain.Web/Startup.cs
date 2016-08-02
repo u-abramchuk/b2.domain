@@ -50,7 +50,7 @@ namespace b2.Domain.Web
             services.AddSingleton<IEventStoreConnection>(_ => eventStoreConnection);
 
             services.AddSingleton<IEventStorage, PersistentEventStorage>();
-            services.AddSingleton<IRepository, Repository>();
+            services.AddSingleton<Repository>();
             services.AddSingleton<TaskCommandHandler>();
             services.AddSingleton<BranchCommandHandler>();
             services.AddSingleton<WorkItemCommandHandler>();

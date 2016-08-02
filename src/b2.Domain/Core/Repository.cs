@@ -2,13 +2,7 @@ using System;
 
 namespace b2.Domain.Core
 {
-    public interface IRepository
-    {
-        T GetById<T>(Guid aggregateId) where T : AggregateRoot, new();
-        void Save<T>(T aggregate) where T : AggregateRoot, new();
-    }
-
-    public class Repository : IRepository
+    public class Repository
     {
         public Repository(IEventStorage storage)
         {
