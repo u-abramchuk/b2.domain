@@ -1,8 +1,9 @@
 using System;
 using b2.Domain.Core;
+using b2.Domain.Entities;
 using Xunit;
 
-namespace b2.Domain.Tests
+namespace b2.Domain.Tests.Entities
 {
     public class WorkItemTests
     {

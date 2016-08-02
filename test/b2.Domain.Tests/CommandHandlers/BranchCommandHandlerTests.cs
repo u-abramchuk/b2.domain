@@ -5,7 +5,7 @@ using b2.Domain.Core;
 using b2.Domain.Events;
 using Xunit;
 
-namespace b2.Domain.Tests
+namespace b2.Domain.Tests.CommandHandlers
 {
     class BranchCommandHandlerTests
     {

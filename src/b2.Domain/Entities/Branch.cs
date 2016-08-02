@@ -1,7 +1,7 @@
 using b2.Domain.Core;
 using b2.Domain.Events;
 
-namespace b2.Domain
+namespace b2.Domain.Entities
 {
     public class Branch : AggregateRoot
     {

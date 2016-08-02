@@ -4,7 +4,7 @@ using b2.Domain.Commands;
 using b2.Domain.Core;
 using b2.Domain.Events;
 
-namespace b2.Domain.Tests
+namespace b2.Domain.Tests.CommandHandlers
 {
     public class TaskCommandHandlerTests
     {
