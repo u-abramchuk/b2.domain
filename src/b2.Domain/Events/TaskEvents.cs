@@ -1,10 +1,11 @@
+using System;
 using b2.Domain.Core;
 
 namespace b2.Domain.Events
 {
     public class TaskCreated : Event
     {
-        public TaskCreated(string id, string name, string url, string status) : base(id)
+        public TaskCreated(Guid id, string name, string url, string status) : base(id)
         {
             Name = name;
             Url = url;
@@ -18,7 +19,7 @@ namespace b2.Domain.Events
 
     public class TaskStatusChanged : Event
     {
-        public TaskStatusChanged(string id, string status) : base(id)
+        public TaskStatusChanged(Guid id, string status) : base(id)
         {
             Status = status;
         }

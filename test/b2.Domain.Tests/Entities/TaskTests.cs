@@ -1,3 +1,4 @@
+using System;
 using b2.Domain.Entities;
 using Xunit;
 
@@ -8,7 +9,7 @@ namespace b2.Domain.Tests.Entities
         [Fact]
         public void CreateTask()
         {
-            var id = "task-id";
+            var id = Guid.NewGuid();
             var name = "task";
             var url = "http://task";
             var status = "new";
@@ -23,7 +24,7 @@ namespace b2.Domain.Tests.Entities
         [Fact]
         public void ChangeTaskStatus()
         {
-            var task = new Task("task-id", "task", "http://task", "new");
+            var task = new Task(Guid.NewGuid(), "task", "http://task", "new");
             var newStatus = "in progress";
 
             task.ChangeStatus(newStatus);

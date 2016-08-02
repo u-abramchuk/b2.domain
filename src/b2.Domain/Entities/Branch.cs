@@ -1,3 +1,4 @@
+using System;
 using b2.Domain.Core;
 using b2.Domain.Events;
 
@@ -9,7 +10,7 @@ namespace b2.Domain.Entities
         {
         }
 
-        public Branch(string id)
+        public Branch(Guid id)
         {
             HandleEvent(new BranchCreated(id), true);
         }

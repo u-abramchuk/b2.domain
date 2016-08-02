@@ -1,12 +1,14 @@
+using System;
+
 namespace b2.Domain.Core
 {
     public class Event
     {
-        public Event(string id)
+        public Event (Guid id)
         {
-            Id = id;
+          Id = id;
         }
         
-        public string Id { get; }
+        public Guid Id { get; }
     }
 }

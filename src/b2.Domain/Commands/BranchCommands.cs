@@ -1,12 +1,14 @@
+using System;
+
 namespace b2.Domain.Commands
 {
     public class CreateBranchCommand
     {
-        public CreateBranchCommand(string id)
+        public CreateBranchCommand(Guid id)
         {
             Id = id;
         }
 
-        public string Id { get; }
+        public Guid Id { get; }
     }
 }

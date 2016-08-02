@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using b2.Domain.CommandHandlers;
 using b2.Domain.Commands;
@@ -23,7 +24,7 @@ namespace b2.Domain.Tests.CommandHandlers
         [Fact]
         public void CreateBranch()
         {
-            var id = "branch-id";
+            var id = Guid.NewGuid();
             var command = new CreateBranchCommand(id);
 
             _handler.Handle(command);
@@ -33,12 +34,11 @@ namespace b2.Domain.Tests.CommandHandlers
             Assert.Equal(id, @event.Id);
         }
 
-        private TEvent GetFromRepository<TEvent>(string id)
+        private TEvent GetFromRepository<TEvent>(Guid id)
             where TEvent : Event
         {
-            return _storage.GetAll()
+            return _storage.GetAll(id)
                 .OfType<TEvent>()
-                .Where(x => x.Id == id)
                 .Single();
         }
     }

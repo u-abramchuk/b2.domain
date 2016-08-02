@@ -1,10 +1,10 @@
-using System.Linq;
+using System;
 
 namespace b2.Domain.Core
 {
     public interface IRepository
     {
-        T GetById<T>(string id) where T : AggregateRoot, new();
+        T GetById<T>(Guid aggregateId) where T : AggregateRoot, new();
         void Save<T>(T aggregate) where T : AggregateRoot, new();
     }
 
@@ -17,9 +17,9 @@ namespace b2.Domain.Core
 
         public IEventStorage Storage { get; }
 
-        public T GetById<T>(string id) where T : AggregateRoot, new()
+        public T GetById<T>(Guid aggregateId) where T : AggregateRoot, new()
         {
-            var events = Storage.GetAll().Where(x => x.Id == id);
+            var events = Storage.GetAll(aggregateId);
             var result = new T();
 
             foreach (var @event in events)
@@ -33,11 +33,7 @@ namespace b2.Domain.Core
         {
             var events = aggregate.Changes;
 
-            foreach (var @event in events)
-            {
-                Storage.Add(@event);
-            }
-
+            Storage.SaveEvents(aggregate.Id, events);
             aggregate.MarkChangesAsCommited();
         }
     }

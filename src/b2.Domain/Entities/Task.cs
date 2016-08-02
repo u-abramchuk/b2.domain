@@ -1,3 +1,4 @@
+using System;
 using b2.Domain.Core;
 using b2.Domain.Events;
 
@@ -9,7 +10,7 @@ namespace b2.Domain.Entities
         {
         }
 
-        public Task(string id, string name, string url, string status)
+        public Task(Guid id, string name, string url, string status)
         {
             HandleEvent(new TaskCreated(id, name, url, status), true);
         }

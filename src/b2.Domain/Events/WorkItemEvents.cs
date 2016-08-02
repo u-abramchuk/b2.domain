@@ -1,44 +1,45 @@
+using System;
 using b2.Domain.Core;
 
 namespace b2.Domain.Events
 {
      public class WorkItemCreatedFromTask : Event
     {
-        public WorkItemCreatedFromTask(string id, string taskId) : base(id)
+        public WorkItemCreatedFromTask(Guid id, Guid taskId) : base(id)
         {
             TaskId = taskId;
         }
 
-        public string TaskId { get; }
+        public Guid TaskId { get; }
     }
 
     public class WorkItemCreatedFromBranch : Event
     {
-        public WorkItemCreatedFromBranch(string id, string branchId) : base(id)
+        public WorkItemCreatedFromBranch(Guid id, Guid branchId) : base(id)
         {
             BranchId = branchId;
         }
 
-        public string BranchId { get; }
+        public Guid BranchId { get; }
     }
 
     public class TaskAssignedToWorkItem : Event
     {
-        public TaskAssignedToWorkItem(string id, string taskId) : base(id)
+        public TaskAssignedToWorkItem(Guid id, Guid taskId) : base(id)
         {
             TaskId = taskId;
         }
 
-        public string TaskId { get; }
+        public Guid TaskId { get; }
     }
 
     public class BranchAssignedToWorkItem : Event
     {
-        public BranchAssignedToWorkItem(string id, string branchId) : base(id)
+        public BranchAssignedToWorkItem(Guid id, Guid branchId) : base(id)
         {
             BranchId = branchId;
         }
 
-        public string BranchId { get; }
+        public Guid BranchId { get; }
     }
 }

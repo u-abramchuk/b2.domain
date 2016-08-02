@@ -4,6 +4,7 @@ using System.Linq;
 using b2.Domain.CommandHandlers;
 using b2.Domain.Commands;
 using b2.Domain.Events;
+using System;
 
 namespace b2.Domain.Tests.CommandHandlers
 {
@@ -13,9 +14,9 @@ namespace b2.Domain.Tests.CommandHandlers
         private readonly Repository _repository;
         private readonly WorkItemCommandHandler _handler;
 
-        private const string workItemFromBranchId = "workitem-with-branch-id";
-        private const string taskId = "task-id";
-        private const string branchId = "branch-id";
+        private Guid workItemFromBranchId = Guid.NewGuid();
+        private Guid taskId = Guid.NewGuid();
+        private Guid branchId = Guid.NewGuid();
 
         public WorkItemCommandHandlerTests()
         {
@@ -34,9 +35,7 @@ namespace b2.Domain.Tests.CommandHandlers
 
             _handler.Handle(command);
 
-            var eventsCount = _storage.GetAll()
-                .Where(x => x.Id == workItemFromBranchId)
-                .Count();
+            var eventsCount = _storage.GetAll(workItemFromBranchId).Count();
 
             Assert.Equal(2, eventsCount);
         }
@@ -44,7 +43,7 @@ namespace b2.Domain.Tests.CommandHandlers
         [Fact]
         public void CreateWorkItemFromTask()
         {
-            var id = "new-id";
+            var id = Guid.NewGuid();
             var command = new CreateWorkItemFromTaskCommand(id, taskId);
 
             _handler.Handle(command);
@@ -58,7 +57,7 @@ namespace b2.Domain.Tests.CommandHandlers
         [Fact]
         public void CreateWorkItemFromBranch()
         {
-            var id = "new-id";
+            var id = Guid.NewGuid();
             var command = new CreateWorkItemFromBranchCommand(id, branchId);
 
             _handler.Handle(command);
@@ -87,22 +86,22 @@ namespace b2.Domain.Tests.CommandHandlers
         private void PopulateRepository()
         {
             var taskCreatedEvent = new TaskCreated(taskId, "task", "http://task", "new");
-            _repository.Storage.Add(taskCreatedEvent);
+            _repository.Storage.SaveEvents(taskId, new[] { taskCreatedEvent });
 
             var branchCreatedEvent = new BranchCreated(branchId);
-            _repository.Storage.Add(branchCreatedEvent);
+            _repository.Storage.SaveEvents(branchId, new[] { branchCreatedEvent });
 
             var workItemCreatedFromBranch =
                 new WorkItemCreatedFromBranch(workItemFromBranchId, branchId);
-            _repository.Storage.Add(workItemCreatedFromBranch);
+            _repository.Storage.SaveEvents(workItemFromBranchId,
+                new[] { workItemCreatedFromBranch });
         }
 
-        private TEvent GetFromRepository<TEvent>(string id)
+        private TEvent GetFromRepository<TEvent>(Guid id)
             where TEvent : Event
         {
-            return _storage.GetAll()
+            return _storage.GetAll(id)
                 .OfType<TEvent>()
-                .Where(x => x.Id == id)
                 .Single();
         }
     }

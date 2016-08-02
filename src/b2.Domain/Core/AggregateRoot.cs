@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,10 +11,9 @@ namespace b2.Domain.Core
 
         protected AggregateRoot()
         {
-            Id = string.Empty;
         }
 
-        public string Id { get; protected set; }
+        public Guid Id { get; protected set; }
 
         public void HandleEvent(Event @event, bool isNew)
         {

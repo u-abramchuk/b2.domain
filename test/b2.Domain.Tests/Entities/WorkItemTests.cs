@@ -10,9 +10,9 @@ namespace b2.Domain.Tests.Entities
         [Fact]
         public void CreateWorkItemFromTask()
         {
-            var id = "test-id";
+            var id = Guid.NewGuid();
             var defaultStatus = "new";
-            var task = new Task("task-id", "name", "http://task", "new");
+            var task = new Task(Guid.NewGuid(), "name", "http://task", "new");
             var workItem = new WorkItem(id, task);
 
             Assert.Equal(id, workItem.Id);
@@ -23,9 +23,9 @@ namespace b2.Domain.Tests.Entities
         [Fact]
         public void CreateWorkItemFromBranch()
         {
-            var id = "test-id";
+            var id = Guid.NewGuid();
             var status = "new";
-            var branchId = "branch-id";
+            var branchId = Guid.NewGuid();
             var branch = new Branch(branchId);
             var workItem = new WorkItem(id, branch);
 
@@ -37,10 +37,10 @@ namespace b2.Domain.Tests.Entities
         [Fact]
         public void CannotChangeTask()
         {
-            var id = "test-id";
-            var initialTask = new Task("task-id1", "name", "http://task", "new");
+            var id = Guid.NewGuid();
+            var initialTask = new Task(Guid.NewGuid(), "name", "http://task", "new");
             var workItem = new WorkItem(id, initialTask);
-            var task = new Task("task-id2", "name", "http://task", "new");
+            var task = new Task(Guid.NewGuid(), "name", "http://task", "new");
             var ex = Assert.Throws<DomainException>(() =>
                 workItem.AssignTask(task)
             );
@@ -51,9 +51,9 @@ namespace b2.Domain.Tests.Entities
         [Fact]
         public void CannotChangeBranch()
         {
-            var id = "test-id";
-            var workItem = new WorkItem(id, new Branch("branch-id1"));
-            var branch = new Branch("branch-id2");
+            var id = Guid.NewGuid();
+            var workItem = new WorkItem(id, new Branch(Guid.NewGuid()));
+            var branch = new Branch(Guid.NewGuid());
             var ex = Assert.Throws<DomainException>(() =>
                 workItem.AssignBranch(branch)
             );

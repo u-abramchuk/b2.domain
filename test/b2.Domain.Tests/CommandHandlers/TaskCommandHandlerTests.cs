@@ -1,8 +1,10 @@
+using System;
 using System.Linq;
 using b2.Domain.CommandHandlers;
 using b2.Domain.Commands;
 using b2.Domain.Core;
 using b2.Domain.Events;
+using Xunit;
 
 namespace b2.Domain.Tests.CommandHandlers
 {
@@ -21,7 +23,7 @@ namespace b2.Domain.Tests.CommandHandlers
         
         public void CreateTask()
         {
-            var id = "task-id";
+            var id = Guid.NewGuid();
             var name = "task";
             var url = "http://task";
             var status = "new";
@@ -31,14 +33,18 @@ namespace b2.Domain.Tests.CommandHandlers
             _handler.Handle(command);
 
             var @event = GetFromRepository<TaskCreated>(id);
+
+            Assert.Equal(id, @event.Id);
+            Assert.Equal(name, @event.Name);
+            Assert.Equal(url, @event.Url);
+            Assert.Equal(status, @event.Status);
         }
 
-          private TEvent GetFromRepository<TEvent>(string id)
+          private TEvent GetFromRepository<TEvent>(Guid id)
             where TEvent : Event
         {
-            return _storage.GetAll()
+            return _storage.GetAll(id)
                 .OfType<TEvent>()
-                .Where(x => x.Id == id)
                 .Single();
         }
     }

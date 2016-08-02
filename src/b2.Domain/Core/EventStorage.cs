@@ -1,25 +1,27 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace b2.Domain.Core
 {
     public interface IEventStorage
     {
-        void Add(Event @event);
-        IReadOnlyCollection<Event> GetAll();
+        void SaveEvents(Guid aggregateId, IEnumerable<Event> events);
+        IReadOnlyCollection<Event> GetAll(Guid aggregateId);
     }
 
     public class InMemoryEventStorage : IEventStorage
     {
         private readonly List<Event> _storage = new List<Event>();
 
-        public void Add(Event @event)
+        public void SaveEvents(Guid aggregateId, IEnumerable<Event> events)
         {
-            _storage.Add(@event);
+            _storage.AddRange(events);
         }
 
-        public IReadOnlyCollection<Event> GetAll()
+        public IReadOnlyCollection<Event> GetAll(Guid aggregateId)
         {
-            return _storage.AsReadOnly();
+            return _storage.Where(x => x.Id == aggregateId).ToList().AsReadOnly();
         }
     }
 }

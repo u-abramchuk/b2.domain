@@ -1,3 +1,4 @@
+using System;
 using b2.Domain.Core;
 using b2.Domain.Events;
 
@@ -5,12 +6,12 @@ namespace b2.Domain.Entities
 {
     public class WorkItem : AggregateRoot
     {
-        public WorkItem(string id, Task task) : this()
+        public WorkItem(Guid id, Task task) : this()
         {
             HandleEvent(new WorkItemCreatedFromTask(id, task.Id), true);
         }
 
-        public WorkItem(string id, Branch branch) : this()
+        public WorkItem(Guid id, Branch branch) : this()
         {
             HandleEvent(new WorkItemCreatedFromBranch(id, branch.Id), true);
         }
@@ -21,12 +22,12 @@ namespace b2.Domain.Entities
         }
 
         public string Status { get; }
-        public string TaskId { get; private set; }
-        public string BranchId { get; private set; }
+        public Guid TaskId { get; private set; }
+        public Guid BranchId { get; private set; }
 
         public void AssignTask(Task task)
         {
-            if (TaskId != null && TaskId != task.Id)
+            if (TaskId != default(Guid) && TaskId != task.Id)
             {
                 throw new DomainException("Cannot change task");
             }
@@ -36,7 +37,7 @@ namespace b2.Domain.Entities
 
         public void AssignBranch(Branch branch)
         {
-            if (BranchId != null && BranchId != branch.Id)
+            if (BranchId != default(Guid) && BranchId != branch.Id)
             {
                 throw new DomainException("Cannot change branch");
             }

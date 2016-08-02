@@ -1,38 +1,40 @@
+using System;
+
 namespace b2.Domain.Commands
 {
     public class CreateWorkItemFromTaskCommand
     {
-        public CreateWorkItemFromTaskCommand(string workItemId, string taskId)
+        public CreateWorkItemFromTaskCommand(Guid workItemId, Guid taskId)
         {
             WorkItemId = workItemId;
             TaskId = taskId;
         }
 
-        public string WorkItemId { get; }
-        public string TaskId { get; }
+        public Guid WorkItemId { get; }
+        public Guid TaskId { get; }
     }
 
     public class CreateWorkItemFromBranchCommand
     {
-        public CreateWorkItemFromBranchCommand(string id, string branchId)
+        public CreateWorkItemFromBranchCommand(Guid id, Guid branchId)
         {
             Id = id;
             BranchId = branchId;
         }
 
-        public string Id { get; }
-        public string BranchId { get; }
+        public Guid Id { get; }
+        public Guid BranchId { get; }
     }
 
     public class AssignTaskToWorkItemCommand
     {
-        public AssignTaskToWorkItemCommand(string id, string taskId)
+        public AssignTaskToWorkItemCommand(Guid id, Guid taskId)
         {
             Id = id;
             TaskId = taskId;
         }
 
-        public string Id { get; }
-        public string TaskId { get; }
+        public Guid Id { get; }
+        public Guid TaskId { get; }
     }
 }
