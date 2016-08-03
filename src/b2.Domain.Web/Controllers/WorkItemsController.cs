@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace b2.Domain.Web.Controllers
 {
-    [Route("api/[controller]")]
-    public class WorkItemController : Controller
+    public class WorkItemsController : Controller
     {
         private readonly WorkItemCommandHandler _handler;
 
