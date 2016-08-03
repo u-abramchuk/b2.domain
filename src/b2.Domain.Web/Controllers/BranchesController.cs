@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using b2.Domain.CommandHandlers;
 using b2.Domain.Commands;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,11 @@ namespace b2.Domain.Web.Controllers
         }
 
         [HttpPost]
-        public string Create([FromBody] CreateBranchCommand command)
+        public async Task<string> Create([FromBody] CreateBranchCommand command)
         {
             try
             {
-                _handler.Handle(command);
+                await _handler.Handle(command);
 
                 return "ok";
             }

@@ -1,17 +1,16 @@
 using Xunit;
-using b2.Domain.Core;
 using System.Linq;
 using b2.Domain.CommandHandlers;
 using b2.Domain.Commands;
 using b2.Domain.Events;
 using System;
+using System.Threading.Tasks;
 
 namespace b2.Domain.Tests.CommandHandlers
 {
-    public class WorkItemCommandHandlerTests
+    public class WorkItemCommandHandlerTests : BaseCommandHandlerTests
     {
-        private readonly InMemoryEventStorage _storage;
-        private readonly Repository _repository;
+
         private readonly WorkItemCommandHandler _handler;
 
         private Guid workItemFromBranchId = Guid.NewGuid();
@@ -20,33 +19,31 @@ namespace b2.Domain.Tests.CommandHandlers
 
         public WorkItemCommandHandlerTests()
         {
-            _storage = new InMemoryEventStorage();
-            _repository = new Repository(_storage);
-            _handler = new WorkItemCommandHandler(_repository);
+            _handler = new WorkItemCommandHandler(Repository);
 
             PopulateRepository();
         }
 
         [Fact]
-        public void SaveOnlyNewEvents()
+        public async Task SaveOnlyNewEvents()
         {
             var command =
                 new AssignTaskToWorkItemCommand(workItemFromBranchId, taskId);
 
-            _handler.Handle(command);
+            await _handler.Handle(command);
 
-            var eventsCount = _storage.GetAll(workItemFromBranchId).Count();
+            var eventsCount = Storage.GetAllSync(workItemFromBranchId).Count();
 
             Assert.Equal(2, eventsCount);
         }
 
         [Fact]
-        public void CreateWorkItemFromTask()
+        public async Task CreateWorkItemFromTask()
         {
             var id = Guid.NewGuid();
             var command = new CreateWorkItemFromTaskCommand(id, taskId);
 
-            _handler.Handle(command);
+            await _handler.Handle(command);
 
             var @event = GetFromRepository<WorkItemCreatedFromTask>(id);
 
@@ -55,12 +52,12 @@ namespace b2.Domain.Tests.CommandHandlers
         }
 
         [Fact]
-        public void CreateWorkItemFromBranch()
+        public async Task CreateWorkItemFromBranch()
         {
             var id = Guid.NewGuid();
             var command = new CreateWorkItemFromBranchCommand(id, branchId);
 
-            _handler.Handle(command);
+            await _handler.Handle(command);
 
             var @event = GetFromRepository<WorkItemCreatedFromBranch>(id);
 
@@ -69,15 +66,14 @@ namespace b2.Domain.Tests.CommandHandlers
         }
 
         [Fact]
-        public void AssignTaskToWorkItem()
+        public async Task AssignTaskToWorkItem()
         {
             var command =
                 new AssignTaskToWorkItemCommand(workItemFromBranchId, taskId);
 
-            _handler.Handle(command);
+            await _handler.Handle(command);
 
-            var @event =
-                GetFromRepository<TaskAssignedToWorkItem>(workItemFromBranchId);
+            var @event = GetFromRepository<TaskAssignedToWorkItem>(workItemFromBranchId);
 
             Assert.Equal(workItemFromBranchId, @event.Id);
             Assert.Equal(taskId, @event.TaskId);
@@ -86,23 +82,14 @@ namespace b2.Domain.Tests.CommandHandlers
         private void PopulateRepository()
         {
             var taskCreatedEvent = new TaskCreated(taskId, "task", "http://task", "new");
-            _repository.Storage.SaveEvents(taskId, new[] { taskCreatedEvent });
+            Storage.SaveEventsSync(taskId, new[] { taskCreatedEvent });
 
             var branchCreatedEvent = new BranchCreated(branchId);
-            _repository.Storage.SaveEvents(branchId, new[] { branchCreatedEvent });
+            Storage.SaveEventsSync(branchId, new[] { branchCreatedEvent });
 
             var workItemCreatedFromBranch =
                 new WorkItemCreatedFromBranch(workItemFromBranchId, branchId);
-            _repository.Storage.SaveEvents(workItemFromBranchId,
-                new[] { workItemCreatedFromBranch });
-        }
-
-        private TEvent GetFromRepository<TEvent>(Guid id)
-            where TEvent : Event
-        {
-            return _storage.GetAll(id)
-                .OfType<TEvent>()
-                .Single();
+            Storage.SaveEventsSync(workItemFromBranchId, new[] { workItemCreatedFromBranch });
         }
     }
 }

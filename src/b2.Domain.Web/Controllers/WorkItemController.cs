@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using b2.Domain.CommandHandlers;
 using b2.Domain.Commands;
 using Microsoft.AspNetCore.Mvc;
@@ -10,17 +11,17 @@ namespace b2.Domain.Web.Controllers
     {
         private readonly WorkItemCommandHandler _handler;
 
-        public WorkItemController (WorkItemCommandHandler handler)
+        public WorkItemsController (WorkItemCommandHandler handler)
         {
           _handler = handler;
         }
 
         [HttpPost]
-        public string CreateFromTask([FromBody] CreateWorkItemFromTaskCommand command)
+        public async Task<string> CreateFromTask([FromBody] CreateWorkItemFromTaskCommand command)
         {
             try
             {
-                _handler.Handle(command);
+                await _handler.Handle(command);
 
                 return "ok";
             }
@@ -31,11 +32,11 @@ namespace b2.Domain.Web.Controllers
         }
 
         [HttpPost]
-        public string CreateFromBranch([FromBody] CreateWorkItemFromBranchCommand command)
+        public async Task<string> CreateFromBranch([FromBody] CreateWorkItemFromBranchCommand command)
         {
             try
             {
-                _handler.Handle(command);
+                await _handler.Handle(command);
 
                 return "ok";
             }
@@ -46,11 +47,11 @@ namespace b2.Domain.Web.Controllers
         }
 
         [HttpPost]
-        public string AssignTask([FromBody] AssignTaskToWorkItemCommand command)
+        public async Task<string> AssignTask([FromBody] AssignTaskToWorkItemCommand command)
         {
             try
             {
-                _handler.Handle(command);
+                await _handler.Handle(command);
 
                 return "ok";
             }

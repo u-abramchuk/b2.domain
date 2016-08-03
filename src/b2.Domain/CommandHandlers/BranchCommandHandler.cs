@@ -12,11 +12,11 @@ namespace b2.Domain.CommandHandlers
             _repository = repository;
         }
 
-        public void Handle(CreateBranchCommand command)
+        public async System.Threading.Tasks.Task Handle(CreateBranchCommand command)
         {
             var branch = new Branch(command.Id);
 
-            _repository.Save(branch);
+            await _repository.Save(branch);
         }
     }
 }

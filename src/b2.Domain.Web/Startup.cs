@@ -42,11 +42,11 @@ namespace b2.Domain.Web
             host.Run();
         }
 
-        public async Task ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
 
-            var eventStoreConnection = await InitializeEventStoreConnection();
+            var eventStoreConnection = InitializeEventStoreConnection().Result;
             services.AddSingleton<IEventStoreConnection>(_ => eventStoreConnection);
 
             services.AddSingleton<IEventStorage, PersistentEventStorage>();

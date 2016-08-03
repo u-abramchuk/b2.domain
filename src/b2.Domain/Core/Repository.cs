@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace b2.Domain.Core
 {
@@ -11,10 +12,10 @@ namespace b2.Domain.Core
 
         public IEventStorage Storage { get; }
 
-        public T GetById<T>(Guid aggregateId) where T : AggregateRoot, new()
+        public async Task<T> GetById<T>(Guid aggregateId) where T : AggregateRoot, new()
         {
-            var events = Storage.GetAll(aggregateId);
             var result = new T();
+            var events = await Storage.GetAll(aggregateId);
 
             foreach (var @event in events)
             {
@@ -23,11 +24,11 @@ namespace b2.Domain.Core
             return result;
         }
 
-        public void Save<T>(T aggregate) where T : AggregateRoot, new()
+        public async Task Save<T>(T aggregate) where T : AggregateRoot, new()
         {
             var events = aggregate.Changes;
 
-            Storage.SaveEvents(aggregate.Id, events);
+            await Storage.SaveEvents(aggregate.Id, events);
             aggregate.MarkChangesAsCommited();
         }
     }

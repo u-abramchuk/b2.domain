@@ -13,11 +13,11 @@ namespace b2.Domain.CommandHandlers
             _repository = repository;
         }
 
-        public void Handle(CreateTaskCommand command)
+        public async System.Threading.Tasks.Task Handle(CreateTaskCommand command)
         {
             var task =  new Task(command.Id, command.Name, command.Url, command.Status);
 
-            _repository.Save(task);
+            await _repository.Save(task);
         }
     }
 }
