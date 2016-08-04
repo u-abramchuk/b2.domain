@@ -3,7 +3,11 @@
   "buildOptions": {
     "debugType": "portable",
     "emitEntryPoint": true,
-    "preserveCompilationContext": true
+    "preserveCompilationContext": true,
+    "copyToOutput": [
+      "appsettings.json",
+      "web.config"
+    ]
   },
   "dependencies": {
     "b2.Domain": "1.0.0",
@@ -31,7 +35,7 @@
       "imports": "dnxcore50"
     }
   },
-   "runtimeOptions": {
+  "runtimeOptions": {
     "configProperties": {
       "System.GC.Server": true
     }
@@ -41,5 +45,11 @@
   },
   "tools": {
     "Microsoft.DotNet.Watcher.Tools": "1.0.0-*"
+  },
+  "publishOptions": {
+    "includeFiles": [
+      "appsettings.json",
+      "web.config"
+    ]
   }
 }
