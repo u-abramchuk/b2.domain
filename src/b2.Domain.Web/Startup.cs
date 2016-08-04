@@ -49,7 +49,7 @@ namespace b2.Domain.Web
             var eventStoreConnection = InitializeEventStoreConnection().Result;
             services.AddSingleton<IEventStoreConnection>(_ => eventStoreConnection);
 
-            services.AddSingleton<IEventStorage, PersistentEventStorage>();
+            services.AddSingleton<IEventStore, PersistentEventStore>();
             services.AddSingleton<Repository>();
             services.AddSingleton<TaskCommandHandler>();
             services.AddSingleton<BranchCommandHandler>();

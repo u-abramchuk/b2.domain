@@ -9,11 +9,11 @@ namespace b2.Domain.Tests.CommandHandlers
 
         public BaseCommandHandlerTests()
         {
-            Storage = new InMemoryEventStorage();
+            Storage = new InMemoryEventStore();
             Repository = new Repository(Storage);
         }
 
-        protected InMemoryEventStorage Storage { get; }
+        protected InMemoryEventStore Storage { get; }
         protected Repository Repository { get; }
 
         protected TEvent GetFromRepository<TEvent>(Guid id) where TEvent : Event

@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace b2.Domain
 {
-    public class PersistentEventStorage : IEventStorage, IDisposable
+    public class PersistentEventStore : IEventStore, IDisposable
     {
         private readonly Type[] _knownEvents = new[] {
             typeof(TaskCreated),
@@ -23,7 +23,7 @@ namespace b2.Domain
 
         private readonly IEventStoreConnection _connection;
 
-        public PersistentEventStorage(IEventStoreConnection connection)
+        public PersistentEventStore(IEventStoreConnection connection)
         {
             _connection = connection;
         }

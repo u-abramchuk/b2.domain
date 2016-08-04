@@ -6,7 +6,7 @@ using b2.Domain.Core;
 
 namespace b2.Domain.Tests
 {
-    public class InMemoryEventStorage : IEventStorage
+    public class InMemoryEventStore : IEventStore
     {
         private readonly List<Event> _storage = new List<Event>();
 

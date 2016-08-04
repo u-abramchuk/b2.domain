@@ -5,17 +5,17 @@ namespace b2.Domain.Core
 {
     public class Repository
     {
-        public Repository(IEventStorage storage)
+        public Repository(IEventStore store)
         {
-            Storage = storage;
+            Store = store;
         }
 
-        public IEventStorage Storage { get; }
+        public IEventStore Store { get; }
 
         public async Task<T> GetById<T>(Guid aggregateId) where T : AggregateRoot, new()
         {
             var result = new T();
-            var events = await Storage.GetAll(aggregateId);
+            var events = await Store.GetAll(aggregateId);
 
             foreach (var @event in events)
             {
@@ -28,7 +28,7 @@ namespace b2.Domain.Core
         {
             var events = aggregate.Changes;
 
-            await Storage.SaveEvents(aggregate.Id, events);
+            await Store.SaveEvents(aggregate.Id, events);
             aggregate.MarkChangesAsCommited();
         }
     }
