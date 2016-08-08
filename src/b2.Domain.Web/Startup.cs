@@ -50,6 +50,7 @@ namespace b2.Domain.Web
             services.AddSingleton<IEventStoreConnection>(_ => eventStoreConnection);
 
             services.AddSingleton<IEventStore, PersistentEventStore>();
+            services.AddSingleton<IEventStore, EventStore>();
             services.AddSingleton<Repository>();
             services.AddSingleton<TaskCommandHandler>();
             services.AddSingleton<BranchCommandHandler>();
@@ -58,7 +59,8 @@ namespace b2.Domain.Web
 
         private async Task<IEventStoreConnection> InitializeEventStoreConnection()
         {
-            var eventStoreConnection = await EventStoreConnection.Create(Configuration.GetConnectionString("EventStore"));
+            var connectionString = Configuration.GetConnectionString("EventStore");
+            var eventStoreConnection = await EventStoreConnection.Create(connectionString);
 
             await eventStoreConnection.ConnectAsync();
 

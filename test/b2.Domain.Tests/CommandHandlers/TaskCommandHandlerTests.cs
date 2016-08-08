@@ -11,11 +11,11 @@ namespace b2.Domain.Tests.CommandHandlers
     {
         private readonly TaskCommandHandler _handler;
 
-         public TaskCommandHandlerTests()
+        public TaskCommandHandlerTests()
         {
             _handler = new TaskCommandHandler(Repository);
         }
-        
+
         public async Task CreateTask()
         {
             var id = Guid.NewGuid();
@@ -27,12 +27,12 @@ namespace b2.Domain.Tests.CommandHandlers
 
             await _handler.Handle(command);
 
-            var @event = GetFromRepository<TaskCreated>(id);
+            var storedEvent = GetStoredEvent<TaskCreated>(id);
 
-            Assert.Equal(id, @event.Id);
-            Assert.Equal(name, @event.Name);
-            Assert.Equal(url, @event.Url);
-            Assert.Equal(status, @event.Status);
+            Assert.Equal(id, storedEvent.Id);
+            Assert.Equal(name, storedEvent.Name);
+            Assert.Equal(url, storedEvent.Url);
+            Assert.Equal(status, storedEvent.Status);
         }
     }
 }

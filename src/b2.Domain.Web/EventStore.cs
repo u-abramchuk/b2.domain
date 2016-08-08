@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using b2.Domain.Core;
 using b2.Domain.Events;
 using EventStore.ClientAPI;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace b2.Domain
 {
-    public class PersistentEventStore : IEventStore, IDisposable
+    public class EventStore : IEventStore, IDisposable
     {
         private readonly Type[] _knownEvents = new[] {
             typeof(TaskCreated),
@@ -23,23 +25,26 @@ namespace b2.Domain
 
         private readonly IEventStoreConnection _connection;
 
-        public PersistentEventStore(IEventStoreConnection connection)
+        public EventStore(IEventStoreConnection connection)
         {
             _connection = connection;
         }
 
-        public async Task SaveEvents(Guid aggregateId, IEnumerable<Event> events)
+        public async Task SaveEvents(
+            Guid aggregateId,
+            IEnumerable<EventDescriptor> eventDescriptors
+        )
         {
             var stream = aggregateId.ToString();
 
             await _connection.AppendToStreamAsync(
                 stream,
                 ExpectedVersion.Any,
-                events.Select(ConvertEventToEventData)
+                eventDescriptors.Select(ConvertEventDescriptorToEventData)
             );
         }
 
-        public async Task<IReadOnlyCollection<Event>> GetAll(Guid aggregateId)
+        public async Task<IReadOnlyCollection<EventDescriptor>> GetAll(Guid aggregateId)
         {
             var stream = aggregateId.ToString();
             var allEvents = new List<ResolvedEvent>();
@@ -49,7 +54,7 @@ namespace b2.Domain
             do
             {
                 currentSlice = await _connection
-                .ReadStreamEventsForwardAsync(stream, nextSliceStart, 200, false);
+                    .ReadStreamEventsForwardAsync(stream, nextSliceStart, 200, false);
 
                 nextSliceStart = currentSlice.NextEventNumber;
 
@@ -57,28 +62,33 @@ namespace b2.Domain
             } while (!currentSlice.IsEndOfStream);
 
             return allEvents
-                .Select(x => ConvertRecordedEventToEvent(x.Event))
+                .Select(x => ConvertRecordedEventToEventDescriptor(x.Event))
                 .ToList();
         }
 
-        private EventData ConvertEventToEventData(Event @event)
+        private EventData ConvertEventDescriptorToEventData(EventDescriptor eventDescriptor)
         {
-            var serializedBody = JsonConvert.SerializeObject(@event);
+            var serializedBody = JsonConvert.SerializeObject(eventDescriptor.Event);
             return new EventData(
-                Guid.NewGuid(),
-                @event.GetType().Name,
+                eventDescriptor.Id,
+                eventDescriptor.EventType,
                 true,
                 Encoding.UTF8.GetBytes(serializedBody),
                 null
             );
         }
 
-        private Event ConvertRecordedEventToEvent(RecordedEvent @event)
+        private EventDescriptor ConvertRecordedEventToEventDescriptor(RecordedEvent @event)
         {
             var body = Encoding.UTF8.GetString(@event.Data);
             var type = _knownEvents.SingleOrDefault(x => x.Name == @event.EventType);
 
-            return (Event)JsonConvert.DeserializeObject(body, type);
+            return new EventDescriptor(
+                @event.EventId,
+                @event.EventType,
+                @event.EventNumber,
+                (Event) JsonConvert.DeserializeObject(body, type)
+            );
         }
 
         public void Dispose()

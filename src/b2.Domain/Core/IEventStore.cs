@@ -6,7 +6,7 @@ namespace b2.Domain.Core
 {
     public interface IEventStore
     {
-        Task SaveEvents(Guid aggregateId, IEnumerable<Event> events);
-        Task<IReadOnlyCollection<Event>> GetAll(Guid aggregateId);
+        Task SaveEvents(Guid aggregateId, IEnumerable<EventDescriptor> events);
+        Task<IReadOnlyCollection<EventDescriptor>> GetAll(Guid aggregateId);
     }
 }

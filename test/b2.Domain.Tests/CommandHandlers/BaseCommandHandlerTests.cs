@@ -16,9 +16,13 @@ namespace b2.Domain.Tests.CommandHandlers
         protected InMemoryEventStore Storage { get; }
         protected Repository Repository { get; }
 
-        protected TEvent GetFromRepository<TEvent>(Guid id) where TEvent : Event
+        protected TEvent GetStoredEvent<TEvent>(Guid id) where TEvent : Event
         {
             return Storage.GetAllSync(id)
+                .Select(x => x.Event)
+                .OfType<TEvent>()
+                .Single();
+        }
                 .OfType<TEvent>()
                 .Single();
         }

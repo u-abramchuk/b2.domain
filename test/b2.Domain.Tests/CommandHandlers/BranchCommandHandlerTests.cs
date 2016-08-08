@@ -24,9 +24,9 @@ namespace b2.Domain.Tests.CommandHandlers
 
             await _handler.Handle(command);
 
-            var @event = GetFromRepository<BranchCreated>(id);
+            var storedEvent = GetStoredEvent<BranchCreated>(id);
 
-            Assert.Equal(id, @event.Id);
+            Assert.Equal(id, storedEvent.Id);
         }
     }
 }

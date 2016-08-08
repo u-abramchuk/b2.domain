@@ -19,14 +19,14 @@ namespace b2.Domain.Core
 
             foreach (var @event in events)
             {
-                result.HandleEvent(@event, false);
+                result.HandleEvent(@event.Event, false);
             }
             return result;
         }
 
         public async Task Save<T>(T aggregate) where T : AggregateRoot, new()
         {
-            var events = aggregate.Changes;
+            var events = aggregate.Changes.Select(x => new EventDescriptor(x));
 
             await Store.SaveEvents(aggregate.Id, events);
             aggregate.MarkChangesAsCommited();
