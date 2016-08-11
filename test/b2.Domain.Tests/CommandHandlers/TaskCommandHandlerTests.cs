@@ -33,6 +33,13 @@ namespace b2.Domain.Tests.CommandHandlers
             Assert.Equal(name, storedEvent.Name);
             Assert.Equal(url, storedEvent.Url);
             Assert.Equal(status, storedEvent.Status);
+
+            var publishedEvent = GetPublishedEvent<TaskCreated>(id);
+
+            Assert.Equal(id, publishedEvent.Id);
+            Assert.Equal(name, publishedEvent.Name);
+            Assert.Equal(url, publishedEvent.Url);
+            Assert.Equal(status, publishedEvent.Status);
         }
     }
 }

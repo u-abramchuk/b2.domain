@@ -11,8 +11,9 @@
   },
   "dependencies": {
     "b2.Domain": "1.0.0",
-    "EventStore.ClientAPI.DotNetCore": "1.0.0",
     "Newtonsoft.Json": "9.0.1-*",
+    "EventStore.ClientAPI.DotNetCore": "1.0.0",
+    "RabbitMQ.Client": "4.0.0-*",
     "Microsoft.AspNetCore.Diagnostics": "1.1.0-*",
     "Microsoft.AspNetCore.Mvc": "1.1.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.1.0-*",

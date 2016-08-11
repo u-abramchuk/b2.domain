@@ -1,26 +1,31 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace b2.Domain.Core
 {
     public class Repository
     {
-        public Repository(IEventStore store)
-        {
-            Store = store;
-        }
+        private readonly IEventStore _store;
+        private readonly IEventPublisher _publisher;
 
-        public IEventStore Store { get; }
+        public Repository(IEventStore store, IEventPublisher publisher)
+        {
+            _store = store;
+            _publisher = publisher;
+        }
 
         public async Task<T> GetById<T>(Guid aggregateId) where T : AggregateRoot, new()
         {
             var result = new T();
-            var events = await Store.GetAll(aggregateId);
+
+            var events = await _store.GetAll(aggregateId);
 
             foreach (var @event in events)
             {
                 result.HandleEvent(@event.Event, false);
             }
+
             return result;
         }
 
@@ -28,7 +33,9 @@ namespace b2.Domain.Core
         {
             var events = aggregate.Changes.Select(x => new EventDescriptor(x));
 
-            await Store.SaveEvents(aggregate.Id, events);
+            await _store.SaveEvents(aggregate.Id, events);
+            _publisher.Publish(events);
+
             aggregate.MarkChangesAsCommited();
         }
     }

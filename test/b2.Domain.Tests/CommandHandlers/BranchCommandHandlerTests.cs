@@ -27,6 +27,10 @@ namespace b2.Domain.Tests.CommandHandlers
             var storedEvent = GetStoredEvent<BranchCreated>(id);
 
             Assert.Equal(id, storedEvent.Id);
+
+            var publishedEvent = GetPublishedEvent<BranchCreated>(id);
+
+            Assert.Equal(id, publishedEvent.Id);
         }
     }
 }

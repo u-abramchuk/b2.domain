@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 
 namespace b2.Domain.Web
 {
@@ -49,8 +50,11 @@ namespace b2.Domain.Web
             var eventStoreConnection = InitializeEventStoreConnection().Result;
             services.AddSingleton<IEventStoreConnection>(_ => eventStoreConnection);
 
-            services.AddSingleton<IEventStore, PersistentEventStore>();
+            var connectionFactory = InitializeRabbitMqConnectionFactory();
+            services.AddSingleton<ConnectionFactory>(_ => connectionFactory);
+
             services.AddSingleton<IEventStore, EventStore>();
+            services.AddSingleton<IEventPublisher, EventPublisher>();
             services.AddSingleton<Repository>();
             services.AddSingleton<TaskCommandHandler>();
             services.AddSingleton<BranchCommandHandler>();
@@ -65,6 +69,17 @@ namespace b2.Domain.Web
             await eventStoreConnection.ConnectAsync();
 
             return eventStoreConnection;
+        }
+
+        private ConnectionFactory InitializeRabbitMqConnectionFactory()
+        {
+            var factory = new ConnectionFactory
+            {
+                Uri = Configuration.GetConnectionString("RabbitMQ"),
+                AutomaticRecoveryEnabled = true
+            };
+
+            return factory;
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

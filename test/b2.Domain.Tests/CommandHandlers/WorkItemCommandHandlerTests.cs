@@ -5,6 +5,7 @@ using b2.Domain.Commands;
 using b2.Domain.Events;
 using System;
 using System.Threading.Tasks;
+using b2.Domain.Core;
 
 namespace b2.Domain.Tests.CommandHandlers
 {
@@ -35,6 +36,12 @@ namespace b2.Domain.Tests.CommandHandlers
             var storedEventsCount = Storage.GetAllSync(workItemFromBranchId).Count();
 
             Assert.Equal(2, storedEventsCount);
+
+            var publishedEventsCount = Publisher.PublishedEvents
+                                        .Where(x => x.Event.Id == workItemFromBranchId)
+                                        .Count();
+
+            Assert.Equal(2, publishedEventsCount);
         }
 
         [Fact]
@@ -50,8 +57,10 @@ namespace b2.Domain.Tests.CommandHandlers
             Assert.Equal(id, storedEvent.Id);
             Assert.Equal(taskId, storedEvent.TaskId);
 
-            Assert.Equal(id, @event.Id);
-            Assert.Equal(taskId, @event.TaskId);
+            var publishedEvent = GetPublishedEvent<WorkItemCreatedFromTask>(id);
+
+            Assert.Equal(id, publishedEvent.Id);
+            Assert.Equal(taskId, publishedEvent.TaskId);
         }
 
         [Fact]
@@ -67,8 +76,10 @@ namespace b2.Domain.Tests.CommandHandlers
             Assert.Equal(id, storedEvent.Id);
             Assert.Equal(branchId, storedEvent.BranchId);
 
-            Assert.Equal(id, @event.Id);
-            Assert.Equal(branchId, @event.BranchId);
+            var publishedEvent = GetPublishedEvent<WorkItemCreatedFromBranch>(id);
+
+            Assert.Equal(id, publishedEvent.Id);
+            Assert.Equal(branchId, publishedEvent.BranchId);
         }
 
         [Fact]
@@ -84,8 +95,10 @@ namespace b2.Domain.Tests.CommandHandlers
             Assert.Equal(workItemFromBranchId, storedEvent.Id);
             Assert.Equal(taskId, storedEvent.TaskId);
 
-            Assert.Equal(workItemFromBranchId, @event.Id);
-            Assert.Equal(taskId, @event.TaskId);
+            var publishedEvent = GetPublishedEvent<TaskAssignedToWorkItem>(workItemFromBranchId);
+
+            Assert.Equal(workItemFromBranchId, publishedEvent.Id);
+            Assert.Equal(taskId, publishedEvent.TaskId);
         }
 
         private void PopulateRepository()
@@ -106,6 +119,12 @@ namespace b2.Domain.Tests.CommandHandlers
                 workItemFromBranchId, 
                 new [] { workItemCreatedFromBranchDescriptor }
             );
+
+            Publisher.PublishedEvents.AddRange(new [] {
+                taskCreatedEventDescriptor,
+                branchCreatedEventDescriptor,
+                workItemCreatedFromBranchDescriptor
+            });
         }
     }
 }

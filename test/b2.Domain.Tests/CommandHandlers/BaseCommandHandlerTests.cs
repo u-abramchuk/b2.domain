@@ -9,9 +9,12 @@ namespace b2.Domain.Tests.CommandHandlers
 
         public BaseCommandHandlerTests()
         {
+            Publisher = new InMemoryEventPublisher();
             Storage = new InMemoryEventStore();
-            Repository = new Repository(Storage);
+            Repository = new Repository(Storage, Publisher);
         }
+
+        protected InMemoryEventPublisher Publisher { get; }
 
         protected InMemoryEventStore Storage { get; }
         protected Repository Repository { get; }
@@ -23,6 +26,12 @@ namespace b2.Domain.Tests.CommandHandlers
                 .OfType<TEvent>()
                 .Single();
         }
+
+        protected TEvent GetPublishedEvent<TEvent>(Guid id) where TEvent : Event
+        {
+            return Publisher.PublishedEvents
+                .Select(x => x.Event)
+                .Where(x => x.Id == id)
                 .OfType<TEvent>()
                 .Single();
         }
