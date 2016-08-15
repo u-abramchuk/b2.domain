@@ -1,0 +1,24 @@
+version: '2'
+services:
+    eventstore: 
+        image: eventstore/eventstore
+        container_name: "b2eventstore"
+        ports:
+            - "1113:1113"
+            - "2113:2113"
+    rabbitmq:
+        image: rabbitmq:3-management
+        container_name: "b2rabbitmq"
+        ports: 
+            - "5672:5672"
+            - "15672:15672"
+    b2domain:
+        build: 
+            context: .
+            dockerfile: Dockerfile            
+        container_name: b2domain
+        depends_on:
+            - eventstore
+            - rabbitmq
+        ports:
+            - "5000:5000"
