@@ -1,22 +1,16 @@
+image: docker:latest
+
+services:
+    - docker:dind
+
 stages:
     - build
-    - unittest
+
+before_script:
+    - docker info
 
 build:
     stage: build
     script:
-        - dotnet restore
-        - dotnet build src/b2.Domain.Web
-    tags: 
-        - build
-        - csharp
-        - coreclr
-
-unit tests:
-    stage: unittest
-    script:
-        - dotnet test test/b2.Domain.Tests
-    tags:
-        - unit tests
-        - xunit
+        - docker build -t b2domain .
     
