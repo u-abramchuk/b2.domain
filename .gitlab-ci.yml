@@ -1,6 +1,3 @@
-before_script:
-    - dotnet restore
-
 stages:
     - build
     - unittest
@@ -8,6 +5,7 @@ stages:
 build:
     stage: build
     script:
+        - dotnet restore
         - dotnet build src/b2.Domain.Web
     tags: 
         - build
@@ -15,7 +13,7 @@ build:
         - coreclr
 
 unit tests:
-    stage: test
+    stage: unittest
     script:
         - dotnet test test/b2.Domain.Tests
     tags:
