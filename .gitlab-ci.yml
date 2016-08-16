@@ -5,12 +5,23 @@ services:
 
 stages:
     - build
-
-before_script:
-    - docker info
+    - unittest
+    - package
 
 build:
     stage: build
     script:
         - docker build -t b2domain .
+        - docker run -t -v $(pwd):/app b2domain dotnet restore
+        - docker run -t -v $(pwd):/app b2domain dotnet build src/b2.Domain.Web
+
+unit tests:
+    stage: unittest
+    script:
+        - docker run -t -v $(pwd):/app b2domain dotnet test test/b2.Domain.Tests
+
+package:
+    stage: package
+    script:
+        - docker run -t -v $(pwd):/app b2domain dotnet publish -c Release -o output src/b2.Domain.Web
     
