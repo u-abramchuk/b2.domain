@@ -30,7 +30,7 @@ unit tests:
 package:
     stage: package
     tags:
-        -docker
+        - docker
     script:
         - docker run -t -v $(pwd):/app b2domain dotnet publish -c Release -o output src/b2.Domain.Web
     
