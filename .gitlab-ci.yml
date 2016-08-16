@@ -10,18 +10,27 @@ stages:
 
 build:
     stage: build
+    tags: 
+        - docker
     script:
+        - pwd
         - docker build -t b2domain .
+        - docker run -t -v $(pwd):/app b2domain pwd
+        - docker run -t -v $(pwd):/app b2domain ls
         - docker run -t -v $(pwd):/app b2domain dotnet restore
         - docker run -t -v $(pwd):/app b2domain dotnet build src/b2.Domain.Web
 
 unit tests:
     stage: unittest
+    tags:
+        - docker
     script:
         - docker run -t -v $(pwd):/app b2domain dotnet test test/b2.Domain.Tests
 
 package:
     stage: package
+    tags:
+        -docker
     script:
         - docker run -t -v $(pwd):/app b2domain dotnet publish -c Release -o output src/b2.Domain.Web
     
