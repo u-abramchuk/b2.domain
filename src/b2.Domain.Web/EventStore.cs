@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using b2.Domain.Core;
 using b2.Domain.Events;
 using EventStore.ClientAPI;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-namespace b2.Domain
+namespace b2.Domain.Web
 {
     public class EventStore : IEventStore, IDisposable
     {
+        private readonly object _lockObject = new object();
         private readonly Type[] _knownEvents = new[] {
             typeof(TaskCreated),
             typeof(BranchCreated),
@@ -22,12 +21,20 @@ namespace b2.Domain
             typeof(TaskAssignedToWorkItem),
             typeof(BranchAssignedToWorkItem)
         };
+        private readonly string _connectionString;
+        private Lazy<IEventStoreConnection> _connection;
 
-        private readonly IEventStoreConnection _connection;
-
-        public EventStore(IEventStoreConnection connection)
+        public EventStore(string connectionString)
         {
-            _connection = connection;
+            _connectionString = connectionString;
+            _connection = new Lazy<IEventStoreConnection>(() =>
+            {
+                var connection = EventStoreConnection.Create(_connectionString).Result;
+
+                connection.ConnectAsync().Wait();
+
+                return connection;
+            });
         }
 
         public async Task SaveEvents(
@@ -37,7 +44,7 @@ namespace b2.Domain
         {
             var stream = aggregateId.ToString();
 
-            await _connection.AppendToStreamAsync(
+            await GetConnection().AppendToStreamAsync(
                 stream,
                 ExpectedVersion.Any,
                 eventDescriptors.Select(ConvertEventDescriptorToEventData)
@@ -53,7 +60,7 @@ namespace b2.Domain
 
             do
             {
-                currentSlice = await _connection
+                currentSlice = await GetConnection()
                     .ReadStreamEventsForwardAsync(stream, nextSliceStart, 200, false);
 
                 nextSliceStart = currentSlice.NextEventNumber;
@@ -64,6 +71,19 @@ namespace b2.Domain
             return allEvents
                 .Select(x => ConvertRecordedEventToEventDescriptor(x.Event))
                 .ToList();
+        }
+
+        private IEventStoreConnection GetConnection()
+        {
+            return _connection.Value;
+        }
+
+        public void Dispose()
+        {
+            if (_connection.IsValueCreated)
+            {
+                _connection.Value.Dispose();
+            }
         }
 
         private EventData ConvertEventDescriptorToEventData(EventDescriptor eventDescriptor)
@@ -87,13 +107,8 @@ namespace b2.Domain
                 @event.EventId,
                 @event.EventType,
                 @event.EventNumber,
-                (Event) JsonConvert.DeserializeObject(body, type)
+                (Event)JsonConvert.DeserializeObject(body, type)
             );
-        }
-
-        public void Dispose()
-        {
-            _connection.Close();
         }
     }
 }

@@ -7,18 +7,22 @@ using RabbitMQ.Client;
 
 namespace b2.Domain.Web
 {
-    public class EventPublisher : IEventPublisher, IDisposable
+    public class EventPublisher : IEventPublisher
     {
-        private readonly ConnectionFactory _factory;
+        private Lazy<ConnectionFactory> _factory;
 
-        public EventPublisher(ConnectionFactory factory)
+        public EventPublisher(string connectionString)
         {
-            _factory = factory;
+            _factory = new Lazy<ConnectionFactory>(() => new ConnectionFactory
+            {
+                Uri = connectionString,
+                AutomaticRecoveryEnabled = true
+            });
         }
 
         public void Publish(IEnumerable<EventDescriptor> events)
         {
-            using (var connection = _factory.CreateConnection())
+            using (var connection = GetFactory().CreateConnection())
             using (var channel = connection.CreateModel())
             {
                 channel.QueueDeclare(queue: "b2.domain.events",
@@ -41,8 +45,9 @@ namespace b2.Domain.Web
             }
         }
 
-        public void Dispose()
+        private ConnectionFactory GetFactory()
         {
+            return _factory.Value;
         }
     }
 }

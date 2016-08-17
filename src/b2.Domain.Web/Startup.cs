@@ -1,14 +1,11 @@
 using System.IO;
-using System.Threading.Tasks;
 using b2.Domain.CommandHandlers;
 using b2.Domain.Core;
-using EventStore.ClientAPI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
 
 namespace b2.Domain.Web
 {
@@ -47,42 +44,23 @@ namespace b2.Domain.Web
         {
             services.AddMvc();
 
-            var eventStoreConnection = InitializeEventStoreConnection().Result;
-            services.AddSingleton<IEventStoreConnection>(_ => eventStoreConnection);
-
-            var connectionFactory = InitializeRabbitMqConnectionFactory();
-            services.AddSingleton<ConnectionFactory>(_ => connectionFactory);
-
-            services.AddSingleton<IEventStore, EventStore>();
-            services.AddSingleton<IEventPublisher, EventPublisher>();
+            services.AddSingleton<IEventStore>(
+                _ => new EventStore(Configuration.GetConnectionString("EventStore"))
+            );
+            services.AddSingleton<IEventPublisher>(
+                _ => new EventPublisher(Configuration.GetConnectionString("RabbitMQ"))
+            );
             services.AddSingleton<Repository>();
             services.AddSingleton<TaskCommandHandler>();
             services.AddSingleton<BranchCommandHandler>();
             services.AddSingleton<WorkItemCommandHandler>();
         }
 
-        private async Task<IEventStoreConnection> InitializeEventStoreConnection()
-        {
-            var connectionString = Configuration.GetConnectionString("EventStore");
-            var eventStoreConnection = await EventStoreConnection.Create(connectionString);
-
-            await eventStoreConnection.ConnectAsync();
-
-            return eventStoreConnection;
-        }
-
-        private ConnectionFactory InitializeRabbitMqConnectionFactory()
-        {
-            var factory = new ConnectionFactory
-            {
-                Uri = Configuration.GetConnectionString("RabbitMQ"),
-                AutomaticRecoveryEnabled = true
-            };
-
-            return factory;
-        }
-
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(
+            IApplicationBuilder app, 
+            IHostingEnvironment env, 
+            ILoggerFactory loggerFactory
+        )
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
