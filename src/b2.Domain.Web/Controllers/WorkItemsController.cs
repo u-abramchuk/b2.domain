@@ -16,47 +16,47 @@ namespace b2.Domain.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<string> CreateFromTask([FromBody] CreateWorkItemFromTaskCommand command)
+        public async Task<IActionResult> CreateFromTask([FromBody] CreateWorkItemFromTaskCommand command)
         {
             try
             {
                 await _handler.Handle(command);
 
-                return "ok";
+                return Content("ok");
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPost]
-        public async Task<string> CreateFromBranch([FromBody] CreateWorkItemFromBranchCommand command)
+        public async Task<IActionResult> CreateFromBranch([FromBody] CreateWorkItemFromBranchCommand command)
         {
             try
             {
                 await _handler.Handle(command);
 
-                return "ok";
+                return Content("ok");
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPost]
-        public async Task<string> AssignTask([FromBody] AssignTaskToWorkItemCommand command)
+        public async Task<IActionResult> AssignTask([FromBody] AssignTaskToWorkItemCommand command)
         {
             try
             {
                 await _handler.Handle(command);
 
-                return "ok";
+                return Content("ok");
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return BadRequest(ex.Message);
             }
         }
     }

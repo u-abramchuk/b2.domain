@@ -15,23 +15,18 @@ namespace b2.Domain.Web.Controllers
             _handler = handler;
         }
 
-        public IActionResult Test()
-        {
-            return new NoContentResult();
-        }
-
         [HttpPost]
-        public async Task<string> Create([FromBody] CreateTaskCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateTaskCommand command)
         {
             try
             {
                 await _handler.Handle(command);
 
-                return "ok";
+                return Content("ok");
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return BadRequest(ex.Message);
             }
         }
     }

@@ -16,17 +16,17 @@ namespace b2.Domain.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<string> Create([FromBody] CreateBranchCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateBranchCommand command)
         {
             try
             {
                 await _handler.Handle(command);
 
-                return "ok";
+                return Content("ok");
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return this.BadRequest(ex.Message);
             }
         }
     }
