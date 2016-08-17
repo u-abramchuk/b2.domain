@@ -69,7 +69,7 @@ namespace b2.Domain.Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Tasks}/{action=Test}");
+                    template: "{controller=Home}/{action=Index}");
             });
         }
     }
