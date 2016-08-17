@@ -4,9 +4,7 @@ COPY . /app
 
 WORKDIR /app
 
-RUN dotnet restore
-
-RUN dotnet publish -c Release -o output src/b2.Domain.Web
+RUN dotnet restore && dotnet publish -c Release -o output src/b2.Domain.Web
 
 ENV ASPNETCORE_URLS="http://*:5000"
 
