@@ -3,5 +3,5 @@ GITLAB: http://www.timtilberg.com/tag/gitlab/
 ASP.NET MVC routing: http://stephenwalther.com/archive/2015/02/07/asp-net-5-deep-dive-routing
 Consul DNS: https://www.consul.io/docs/agent/dns.html
 
-delete all docker containers on windows: FOR /f "tokens=*" %i IN ('docker ps -a -q') DO docker rm %i
+delete all docker containers on windows: FOR /f "tokens=*" %i IN ('docker ps -a -q') DO docker rm %i -f
 delete all docker images on windows: docker images -q | %{docker rmi -f $_}
