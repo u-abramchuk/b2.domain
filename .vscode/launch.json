@@ -2,13 +2,24 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": ".NET Core Launch (console) Win",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/bin/Debug/<target-framework>/<project-name.dll>",
+            "program": "${workspaceRoot}\\src\\b2.Domain.Web\\bin\\Debug\\netcoreapp1.0\\b2.Domain.Web.dll",
             "args": [],
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}\\src\\b2.Domain.Web",
+            "externalConsole": false,
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Launch (console) Nix",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/src/b2.Domain.Web/bin/Debug/netcoreapp1.0/b2.Domain.Web.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}/src/b2.Domain.Web",
             "externalConsole": false,
             "stopAtEntry": false
         },
