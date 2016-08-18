@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using b2.Domain.Core;
@@ -9,20 +8,20 @@ namespace b2.Domain.Web
 {
     public class EventPublisher : IEventPublisher
     {
-        private Lazy<ConnectionFactory> _factory;
+        private ConnectionFactory _factory;
 
         public EventPublisher(string connectionString)
         {
-            _factory = new Lazy<ConnectionFactory>(() => new ConnectionFactory
+            _factory = new ConnectionFactory
             {
                 Uri = connectionString,
                 AutomaticRecoveryEnabled = true
-            });
+            };
         }
 
         public void Publish(IEnumerable<EventDescriptor> events)
         {
-            using (var connection = GetFactory().CreateConnection())
+            using (var connection = _factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
                 channel.QueueDeclare(queue: "b2.domain.events",
@@ -43,11 +42,6 @@ namespace b2.Domain.Web
                     );
                 }
             }
-        }
-
-        private ConnectionFactory GetFactory()
-        {
-            return _factory.Value;
         }
     }
 }
