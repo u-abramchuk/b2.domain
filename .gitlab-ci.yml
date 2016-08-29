@@ -48,6 +48,7 @@ publish:
         - docker:dind
     dependencies:
         - build
+    only: master
     script:
         - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
         - docker build -t registry.gitlab.com/xagakure-b2/b2.domain:latest .
