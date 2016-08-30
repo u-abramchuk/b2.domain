@@ -54,6 +54,7 @@ namespace b2.Domain.Web
             services.AddSingleton<TaskCommandHandler>();
             services.AddSingleton<BranchCommandHandler>();
             services.AddSingleton<WorkItemCommandHandler>();
+            services.AddSingleton<WorkspaceCommandHandler>();
         }
 
         public void Configure(
