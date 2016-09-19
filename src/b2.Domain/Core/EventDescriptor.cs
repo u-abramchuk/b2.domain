@@ -18,7 +18,6 @@ namespace b2.Domain.Core
         }
 
         public Guid Id { get; }
-        public Guid AggregateId { get; }
         public string EventType { get; }
         public int Version { get; }
         public Event Event { get; }

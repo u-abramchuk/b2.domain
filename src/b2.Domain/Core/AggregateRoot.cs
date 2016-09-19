@@ -1,19 +1,16 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 namespace b2.Domain.Core
 {
-    public abstract class AggregateRoot : IEntity
+    public abstract class AggregateRoot : Entity
     {
         private List<Event> _changes = new List<Event>();
 
         protected AggregateRoot()
         {
         }
-
-        public Guid Id { get; protected set; }
 
         public void HandleEvent(Event @event, bool isNew)
         {

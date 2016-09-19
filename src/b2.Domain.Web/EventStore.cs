@@ -7,6 +7,7 @@ using b2.Domain.Core;
 using b2.Domain.Events;
 using EventStore.ClientAPI;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace b2.Domain.Web
 {
@@ -27,7 +28,7 @@ namespace b2.Domain.Web
         public EventStore(string connectionString)
         {
             _connectionString = connectionString;
-            
+
             InitializeConnection();
         }
 
@@ -52,10 +53,10 @@ namespace b2.Domain.Web
         {
             var stream = aggregateId.ToString();
 
-                await _connection.AppendToStreamAsync(
-                    stream,
-                    ExpectedVersion.Any,
-                    eventDescriptors.Select(ConvertEventDescriptorToEventData)
+            await _connection.AppendToStreamAsync(
+                stream,
+                ExpectedVersion.Any,
+                eventDescriptors.Select(ConvertEventDescriptorToEventData)
             );
         }
 
@@ -68,7 +69,7 @@ namespace b2.Domain.Web
 
             do
             {
-                currentSlice =                     await _connection.ReadStreamEventsForwardAsync(
+                currentSlice = await _connection.ReadStreamEventsForwardAsync(
                         stream,
                         nextSliceStart,
                         200,
