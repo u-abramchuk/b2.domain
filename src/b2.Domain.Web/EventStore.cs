@@ -92,7 +92,10 @@ namespace b2.Domain.Web
 
         private EventData ConvertEventDescriptorToEventData(EventDescriptor eventDescriptor)
         {
-            var serializedBody = JsonConvert.SerializeObject(eventDescriptor.Event);
+            var serializedBody = JsonConvert.SerializeObject(eventDescriptor.Event, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
             return new EventData(
                 eventDescriptor.Id,
                 eventDescriptor.EventType,

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using b2.Domain.Core;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using RabbitMQ.Client;
 
 namespace b2.Domain.Web
@@ -34,7 +35,10 @@ namespace b2.Domain.Web
 
                 foreach (var @event in events)
                 {
-                    var message = JsonConvert.SerializeObject(@event);
+                    var message = JsonConvert.SerializeObject(@event, new JsonSerializerSettings
+                    {
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    });
                     var body = Encoding.UTF8.GetBytes(message);
 
                     channel.BasicPublish(
