@@ -30,13 +30,13 @@ namespace b2.Domain.Tests.CommandHandlers
 
             Assert.Equal(id, storedEvent.Id);
             Assert.Equal(name, storedEvent.Name);
-            Assert.Equal(creatorId, storedEvent.UserId);
+            Assert.Equal(creatorId, storedEvent.CreatorId);
 
             var publishedEvent = GetPublishedEvent<WorkspaceCreated>(id);
 
             Assert.Equal(id, publishedEvent.Id);
             Assert.Equal(name, publishedEvent.Name);
-            Assert.Equal(creatorId, publishedEvent.UserId);
+            Assert.Equal(creatorId, publishedEvent.CreatorId);
         }
 
         [Fact]
@@ -52,11 +52,13 @@ namespace b2.Domain.Tests.CommandHandlers
 
             Assert.Equal(id, storedEvent.Id);
             Assert.Equal(name, storedEvent.Name);
+            Assert.Equal(creatorId, storedEvent.CreatorId);
 
             var publishedEvent = GetPublishedEvent<WorkspaceCreated>(id);
 
             Assert.Equal(id, publishedEvent.Id);
             Assert.Equal(name, publishedEvent.Name);
+            Assert.Equal(creatorId, publishedEvent.CreatorId);
         }
     }
 }

@@ -5,15 +5,13 @@ namespace b2.Domain.Events
 {
     public class WorkspaceCreated : Event
     {
-        public WorkspaceCreated(Guid id, string name, string creator)
+        public WorkspaceCreated(Guid id, string name, string creatorId) : base(id)
         {
-            Id = id;
             Name = name;
-            Creator = creator;
+            CreatorId = creatorId;
         }
 
-        public Guid Id { get; }
         public string Name { get; }
-        public string Creator { get; }
+        public string CreatorId { get; }
     }
 }

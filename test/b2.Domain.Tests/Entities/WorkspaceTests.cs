@@ -16,7 +16,7 @@ namespace b2.Domain.Tests.Entities
 
             Assert.Equal(id, workspace.Id);
             Assert.Equal(name, workspace.Name);
-            Assert.Equal(creator, workspace.Creator);
+            Assert.Equal(creator, workspace.CreatorId);
         }
     }
 }
