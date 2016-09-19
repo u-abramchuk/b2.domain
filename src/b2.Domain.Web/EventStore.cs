@@ -13,12 +13,13 @@ namespace b2.Domain.Web
     public class EventStore : IEventStore, IDisposable
     {
         private readonly Type[] _knownEvents = new[] {
-            typeof(TaskCreated),
-            typeof(BranchCreated),
-            typeof(WorkItemCreatedFromBranch),
-            typeof(WorkItemCreatedFromTask),
-            typeof(TaskAssignedToWorkItem),
-            typeof(BranchAssignedToWorkItem)
+            typeof(WorkspaceCreated)
+            // typeof(TaskCreated),
+            // typeof(BranchCreated),
+            // typeof(WorkItemCreatedFromBranch),
+            // typeof(WorkItemCreatedFromTask),
+            // typeof(TaskAssignedToWorkItem),
+            // typeof(BranchAssignedToWorkItem)
         };
         private readonly string _connectionString;
         private IEventStoreConnection _connection;

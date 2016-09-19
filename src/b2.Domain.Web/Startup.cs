@@ -51,9 +51,9 @@ namespace b2.Domain.Web
                 _ => new EventPublisher(Configuration.GetConnectionString("RabbitMQ"))
             );
             services.AddSingleton<Repository>();
-            services.AddSingleton<TaskCommandHandler>();
-            services.AddSingleton<BranchCommandHandler>();
-            services.AddSingleton<WorkItemCommandHandler>();
+            // services.AddSingleton<TaskCommandHandler>();
+            // services.AddSingleton<BranchCommandHandler>();
+            // services.AddSingleton<WorkItemCommandHandler>();
             services.AddSingleton<WorkspaceCommandHandler>();
         }
 

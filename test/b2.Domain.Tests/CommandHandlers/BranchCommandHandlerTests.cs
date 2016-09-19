@@ -1,36 +1,36 @@
-using System;
-using System.Threading.Tasks;
-using b2.Domain.CommandHandlers;
-using b2.Domain.Commands;
-using b2.Domain.Events;
-using Xunit;
+// using System;
+// using System.Threading.Tasks;
+// using b2.Domain.CommandHandlers;
+// using b2.Domain.Commands;
+// using b2.Domain.Events;
+// using Xunit;
 
-namespace b2.Domain.Tests.CommandHandlers
-{
-    class BranchCommandHandlerTests : BaseCommandHandlerTests
-    {
-        private readonly BranchCommandHandler _handler;
+// namespace b2.Domain.Tests.CommandHandlers
+// {
+//     class BranchCommandHandlerTests : BaseCommandHandlerTests
+//     {
+//         private readonly BranchCommandHandler _handler;
 
-        public BranchCommandHandlerTests()
-        {
-            _handler = new BranchCommandHandler(Repository);
-        }
+//         public BranchCommandHandlerTests()
+//         {
+//             _handler = new BranchCommandHandler(Repository);
+//         }
 
-        [Fact]
-        public async Task CreateBranch()
-        {
-            var id = Guid.NewGuid();
-            var command = new CreateBranchCommand(id);
+//         [Fact]
+//         public async Task CreateBranch()
+//         {
+//             var id = Guid.NewGuid();
+//             var command = new CreateBranchCommand(id);
 
-            await _handler.Handle(command);
+//             await _handler.Handle(command);
 
-            var storedEvent = GetStoredEvent<BranchCreated>(id);
+//             var storedEvent = GetStoredEvent<BranchCreated>(id);
 
-            Assert.Equal(id, storedEvent.Id);
+//             Assert.Equal(id, storedEvent.Id);
 
-            var publishedEvent = GetPublishedEvent<BranchCreated>(id);
+//             var publishedEvent = GetPublishedEvent<BranchCreated>(id);
 
-            Assert.Equal(id, publishedEvent.Id);
-        }
-    }
-}
+//             Assert.Equal(id, publishedEvent.Id);
+//         }
+//     }
+// }
