@@ -17,7 +17,7 @@ namespace b2.Domain.CommandHandlers
         public async System.Threading.Tasks.Task<Guid> Handle(CreateWorkspaceCommand command)
         {
             var id = command.Id ?? Guid.NewGuid();
-            var workspace = new Workspace(id, command.Name);
+            var workspace = new Workspace(id, command.Name, command.UserId);
 
             await _repository.Save(workspace);
 

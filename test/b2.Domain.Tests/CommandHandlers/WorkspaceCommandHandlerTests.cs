@@ -21,7 +21,8 @@ namespace b2.Domain.Tests.CommandHandlers
         {
             var id = Guid.NewGuid();
             var name = "workspace";
-            var command = new CreateWorkspaceCommand(name, id);
+            var creatorId = "user";
+            var command = new CreateWorkspaceCommand(name, creatorId, id);
 
             await _handler.Handle(command);
 
@@ -29,18 +30,21 @@ namespace b2.Domain.Tests.CommandHandlers
 
             Assert.Equal(id, storedEvent.Id);
             Assert.Equal(name, storedEvent.Name);
+            Assert.Equal(creatorId, storedEvent.UserId);
 
             var publishedEvent = GetPublishedEvent<WorkspaceCreated>(id);
 
             Assert.Equal(id, publishedEvent.Id);
             Assert.Equal(name, publishedEvent.Name);
+            Assert.Equal(creatorId, publishedEvent.UserId);
         }
 
         [Fact]
         public async Task CreateWorkspaceWithoutSpecifyingId()
         {
             var name = "workspace";
-            var command = new CreateWorkspaceCommand(name);
+            var creatorId = "user";
+            var command = new CreateWorkspaceCommand(name, creatorId);
 
             var id = await _handler.Handle(command);
 

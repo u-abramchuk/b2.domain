@@ -6,9 +6,9 @@ namespace b2.Domain.Entities
 {
     public class Workspace : AggregateRoot
     {
-        public Workspace(Guid id, string name)
+        public Workspace(Guid id, string name, string creator)
         {
-            HandleEvent(new WorkspaceCreated(id, name), true);
+            HandleEvent(new WorkspaceCreated(id, name, creator), true);
         }
 
         public Workspace()
@@ -16,11 +16,13 @@ namespace b2.Domain.Entities
         }
 
         public string Name { get; private set; }
+        public string Creator { get; private set; }
 
         public void Handle(WorkspaceCreated @event)
         {
             Id = @event.Id;
             Name = @event.Name;
+            Creator = @event.Creator;
         }
     }
 }

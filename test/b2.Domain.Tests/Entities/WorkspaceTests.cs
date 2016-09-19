@@ -11,10 +11,12 @@ namespace b2.Domain.Tests.Entities
         {
             var id = Guid.NewGuid();
             var name = "workspace";
-            var workspace = new Workspace(id, name);
+            var creator = "user";
+            var workspace = new Workspace(id, name, creator);
 
             Assert.Equal(id, workspace.Id);
             Assert.Equal(name, workspace.Name);
+            Assert.Equal(creator, workspace.Creator);
         }
     }
 }
