@@ -53,10 +53,7 @@ namespace b2.Domain.Web
                 )
             );
             services.AddSingleton<IEventPublisher>(
-                container => new EventPublisher(
-                    Configuration.GetConnectionString("RabbitMQ"), 
-                    container.GetService<KnownEvents>()
-                )
+                _ => new EventPublisher(Configuration.GetConnectionString("RabbitMQ"))
             );
             services.AddSingleton<Repository>();
             // services.AddSingleton<TaskCommandHandler>();

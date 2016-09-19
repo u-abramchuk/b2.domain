@@ -10,12 +10,10 @@ namespace b2.Domain.Web
 {
     public class EventPublisher : IEventPublisher
     {
-        private readonly KnownEvents _knownEvents;
         private ConnectionFactory _factory;
 
-        public EventPublisher(string connectionString, KnownEvents knownEvents)
+        public EventPublisher(string connectionString)
         {
-            _knownEvents = knownEvents;
             _factory = new ConnectionFactory
             {
                 Uri = connectionString,
@@ -28,16 +26,17 @@ namespace b2.Domain.Web
             using (var connection = _factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.ExchangeDeclare(exchange: "b2.domain.events", type: "topic", durable: true);
+                channel.ExchangeDeclare(
+                    exchange: "b2.domain.events", 
+                    type: "topic", 
+                    durable: true
+                );
                 channel.QueueDeclare(queue: "b2.domain.events",
                                                  durable: true,
                                                  exclusive: false,
                                                  autoDelete: false,
                                                  arguments: null);
-                foreach (var eventType in _knownEvents.Types)
-                {
-                    channel.QueueBind("b2.domain.events", "b2.domain.events", eventType.Name);
-                }
+                channel.QueueBind("b2.domain.events", "b2.domain.events", "b2.domain.events");
 
                 foreach (var @event in events)
                 {
@@ -49,7 +48,7 @@ namespace b2.Domain.Web
 
                     channel.BasicPublish(
                         exchange: "b2.domain.events",
-                        routingKey: @event.EventType,
+                        routingKey: "b2.domain.events",
                         basicProperties: null,
                         body: body
                     );
