@@ -1,6 +1,7 @@
 using System.IO;
 using b2.Domain.CommandHandlers;
 using b2.Domain.Core;
+using b2.Domain.Events;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -43,12 +44,19 @@ namespace b2.Domain.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSingleton<KnownEvents>();
 
             services.AddSingleton<IEventStore>(
-                _ => new EventStore(Configuration.GetConnectionString("EventStore"))
+                container => new EventStore(
+                    Configuration.GetConnectionString("EventStore"), 
+                    container.GetService<KnownEvents>()
+                )
             );
             services.AddSingleton<IEventPublisher>(
-                _ => new EventPublisher(Configuration.GetConnectionString("RabbitMQ"))
+                container => new EventPublisher(
+                    Configuration.GetConnectionString("RabbitMQ"), 
+                    container.GetService<KnownEvents>()
+                )
             );
             services.AddSingleton<Repository>();
             // services.AddSingleton<TaskCommandHandler>();

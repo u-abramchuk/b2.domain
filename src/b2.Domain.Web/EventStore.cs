@@ -13,21 +13,14 @@ namespace b2.Domain.Web
 {
     public class EventStore : IEventStore, IDisposable
     {
-        private readonly Type[] _knownEvents = new[] {
-            typeof(WorkspaceCreated)
-            // typeof(TaskCreated),
-            // typeof(BranchCreated),
-            // typeof(WorkItemCreatedFromBranch),
-            // typeof(WorkItemCreatedFromTask),
-            // typeof(TaskAssignedToWorkItem),
-            // typeof(BranchAssignedToWorkItem)
-        };
         private readonly string _connectionString;
+        private readonly KnownEvents _knownEvents;
         private IEventStoreConnection _connection;
 
-        public EventStore(string connectionString)
+        public EventStore(string connectionString, KnownEvents knownEvents)
         {
             _connectionString = connectionString;
+            _knownEvents = knownEvents;
 
             InitializeConnection();
         }
@@ -109,7 +102,7 @@ namespace b2.Domain.Web
         private EventDescriptor ConvertRecordedEventToEventDescriptor(RecordedEvent @event)
         {
             var body = Encoding.UTF8.GetString(@event.Data);
-            var type = _knownEvents.SingleOrDefault(x => x.Name == @event.EventType);
+            var type = _knownEvents.Types.SingleOrDefault(x => x.Name == @event.EventType);
 
             return new EventDescriptor(
                 @event.EventId,

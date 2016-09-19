@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 using b2.Domain.Core;
+using b2.Domain.Events;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RabbitMQ.Client;
@@ -9,10 +10,12 @@ namespace b2.Domain.Web
 {
     public class EventPublisher : IEventPublisher
     {
+        private readonly KnownEvents _knownEvents;
         private ConnectionFactory _factory;
 
-        public EventPublisher(string connectionString)
+        public EventPublisher(string connectionString, KnownEvents knownEvents)
         {
+            _knownEvents = knownEvents;
             _factory = new ConnectionFactory
             {
                 Uri = connectionString,
@@ -31,7 +34,10 @@ namespace b2.Domain.Web
                                                  exclusive: false,
                                                  autoDelete: false,
                                                  arguments: null);
-                channel.QueueBind("b2.domain.events", "b2.domain.events", "b2.domain.events");
+                foreach (var eventType in _knownEvents.Types)
+                {
+                    channel.QueueBind("b2.domain.events", "b2.domain.events", eventType.Name);
+                }
 
                 foreach (var @event in events)
                 {
@@ -43,7 +49,7 @@ namespace b2.Domain.Web
 
                     channel.BasicPublish(
                         exchange: "b2.domain.events",
-                        routingKey: "b2.domain.events",
+                        routingKey: @event.EventType,
                         basicProperties: null,
                         body: body
                     );
