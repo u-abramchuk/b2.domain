@@ -15,12 +15,18 @@ namespace b2.Domain.Web
     {
         private readonly string _connectionString;
         private readonly KnownEvents _knownEvents;
+        private readonly JsonSerializer _serializer;
         private IEventStoreConnection _connection;
 
-        public EventStore(string connectionString, KnownEvents knownEvents)
+        public EventStore(
+            string connectionString,
+            KnownEvents knownEvents,
+            JsonSerializer serializer
+        )
         {
             _connectionString = connectionString;
             _knownEvents = knownEvents;
+            _serializer = serializer;
 
             InitializeConnection();
         }
@@ -86,10 +92,7 @@ namespace b2.Domain.Web
 
         private EventData ConvertEventDescriptorToEventData(EventDescriptor eventDescriptor)
         {
-            var serializedBody = JsonConvert.SerializeObject(eventDescriptor.Event, new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+            var serializedBody = _serializer.Serialize(eventDescriptor.Event);
             return new EventData(
                 eventDescriptor.Id,
                 eventDescriptor.EventType,

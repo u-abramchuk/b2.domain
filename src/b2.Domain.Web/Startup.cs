@@ -45,15 +45,20 @@ namespace b2.Domain.Web
         {
             services.AddMvc();
             services.AddSingleton<KnownEvents>();
+            services.AddSingleton<JsonSerializer>();
 
             services.AddSingleton<IEventStore>(
                 container => new EventStore(
-                    Configuration.GetConnectionString("EventStore"), 
-                    container.GetService<KnownEvents>()
+                    Configuration.GetConnectionString("EventStore"),
+                    container.GetService<KnownEvents>(),
+                    container.GetService<JsonSerializer>()
                 )
             );
             services.AddSingleton<IEventPublisher>(
-                _ => new EventPublisher(Configuration.GetConnectionString("RabbitMQ"))
+                container => new EventPublisher(
+                    Configuration.GetConnectionString("RabbitMQ"),
+                    container.GetService<JsonSerializer>()
+                )
             );
             services.AddSingleton<Repository>();
             // services.AddSingleton<TaskCommandHandler>();
@@ -63,8 +68,8 @@ namespace b2.Domain.Web
         }
 
         public void Configure(
-            IApplicationBuilder app, 
-            IHostingEnvironment env, 
+            IApplicationBuilder app,
+            IHostingEnvironment env,
             ILoggerFactory loggerFactory
         )
         {
