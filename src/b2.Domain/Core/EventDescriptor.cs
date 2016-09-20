@@ -12,11 +12,6 @@ namespace b2.Domain.Core
             Event = @event;
         }
 
-        public EventDescriptor(Event @event) :
-            this(Guid.NewGuid(), @event.GetType().Name, -1, @event)
-        {
-        }
-
         public Guid Id { get; }
         public string EventType { get; }
         public int Version { get; }

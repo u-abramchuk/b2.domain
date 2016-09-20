@@ -7,7 +7,6 @@ using b2.Domain.Core;
 using b2.Domain.Events;
 using EventStore.ClientAPI;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace b2.Domain.Web
 {
@@ -105,7 +104,7 @@ namespace b2.Domain.Web
         private EventDescriptor ConvertRecordedEventToEventDescriptor(RecordedEvent @event)
         {
             var body = Encoding.UTF8.GetString(@event.Data);
-            var type = _knownEvents.Types.SingleOrDefault(x => x.Name == @event.EventType);
+            var type = _knownEvents.FindTypeByTypeName(@event.EventType);
 
             return new EventDescriptor(
                 @event.EventId,

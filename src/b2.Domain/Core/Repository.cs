@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using b2.Domain.Events;
 
 namespace b2.Domain.Core
 {
@@ -31,7 +32,13 @@ namespace b2.Domain.Core
 
         public async Task Save<T>(T aggregate) where T : AggregateRoot, new()
         {
-            var events = aggregate.Changes.Select(x => new EventDescriptor(x));
+            var events = aggregate.Changes
+                .Select(@event => new EventDescriptor(
+                    Guid.NewGuid(),
+                    @event.GetType().Name,
+                    -1,
+                    @event)
+                );
 
             await _store.SaveEvents(aggregate.Id, events);
             _publisher.Publish(events);

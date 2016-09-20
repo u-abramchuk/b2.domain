@@ -1,19 +1,32 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace b2.Domain.Events
 {
     public class KnownEvents
     {
-        private readonly Type[] _knownEvents = new[] {
-            typeof(WorkspaceCreated)
-            // typeof(TaskCreated),
-            // typeof(BranchCreated),
-            // typeof(WorkItemCreatedFromBranch),
-            // typeof(WorkItemCreatedFromTask),
-            // typeof(TaskAssignedToWorkItem),
-            // typeof(BranchAssignedToWorkItem)
-        };
+        private readonly IDictionary<string, Type> _knownEvents =
+            new Dictionary<string, Type> {
+                {"workspace.created", typeof(WorkspaceCreated)}
+            };
 
-        public Type[] Types => _knownEvents;
+        public string[] Keys => _knownEvents.Keys.ToArray();
+
+        public Type FindTypeByTypeName(string typeName)
+        {
+            return _knownEvents
+                .Where(x => x.Value.Name == typeName)
+                .Select(x => x.Value)
+                .SingleOrDefault();
+        }
+
+        public string GetEventKeyByTypeName(string typeName)
+        {
+            return _knownEvents
+                .Where(x => x.Value.Name == typeName)
+                .Select(x => x.Key)
+                .SingleOrDefault();
+        }
     }
 }
